@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, BookOpen, Volume2 } from "lucide-react";
+import { ArrowRight, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/contexts/AppContext";
+import { AudioButton } from "@/components/AudioButton";
 
 export default function Welcome() {
   const navigate = useNavigate();
@@ -19,14 +20,13 @@ export default function Welcome() {
           Your reading journey starts here
         </p>
 
-        {/* Audio placeholder */}
-        <button
-          className="mt-3 flex items-center gap-2 text-sm text-accent hover:underline"
-          aria-label="Listen to welcome message"
-        >
-          <Volume2 className="h-5 w-5" />
-          <span>Listen</span>
-        </button>
+        {/* Audio */}
+        <AudioButton
+          text="Your reading journey starts here. Tap Get Started to begin."
+          label="Listen"
+          size="default"
+          className="mt-3 text-sm text-accent"
+        />
 
         {/* Actions */}
         <div className="mt-10 flex w-full flex-col gap-3">

@@ -1,20 +1,23 @@
 import { Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { speak } from "@/lib/speak";
 
 interface AudioButtonProps {
+  /** Text to speak aloud when pressed */
+  text?: string;
   label?: string;
   size?: "sm" | "default" | "icon";
   className?: string;
 }
 
-export function AudioButton({ label, size = "icon", className }: AudioButtonProps) {
+export function AudioButton({ text, label, size = "icon", className }: AudioButtonProps) {
   return (
     <Button
       variant="ghost"
       size={size}
       className={className}
       onClick={() => {
-        // Placeholder — audio will be wired up later
+        if (text) speak(text);
       }}
       aria-label={label ? `Listen to: ${label}` : "Listen"}
     >
