@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Volume2, Check, X, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, X, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useApp } from "@/contexts/AppContext";
 import { getLessonById, getLessonsByCategory } from "@/lib/lessonData";
 import { cn } from "@/lib/utils";
+import { AudioButton } from "@/components/AudioButton";
+import { speak } from "@/lib/speak";
 
 export default function LessonScreen() {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -67,8 +69,8 @@ export default function LessonScreen() {
               <CardContent className="flex flex-col items-center p-8">
                 <div className="text-7xl font-bold text-accent mb-2">{lesson.letter}</div>
                 <p className="text-lg text-muted-foreground">{lesson.sound}</p>
-                <button className="mt-3 flex items-center gap-2 text-accent" aria-label="Listen to sound">
-                  <Volume2 className="h-6 w-6" />
+                <button className="mt-3 flex items-center gap-2 text-accent" aria-label="Listen to sound" onClick={() => speak(`${lesson.letter}. ${lesson.sound}`)}>
+                  <AudioButton text={`${lesson.letter}. ${lesson.sound}`} />
                   <span>Listen</span>
                 </button>
               </CardContent>
@@ -77,8 +79,8 @@ export default function LessonScreen() {
             <h2 className="text-lg font-bold mb-3">Example Words</h2>
             <div className="grid grid-cols-2 gap-2 mb-6">
               {lesson.exampleWords.map((w) => (
-                <button key={w.word} className="flex items-center gap-2 rounded-lg border border-border bg-card p-3 text-left min-h-[52px] hover:border-accent/40">
-                  <Volume2 className="h-4 w-4 text-accent shrink-0" />
+                <button key={w.word} className="flex items-center gap-2 rounded-lg border border-border bg-card p-3 text-left min-h-[52px] hover:border-accent/40" onClick={() => speak(w.word)}>
+                  <AudioButton text={w.word} />
                   <div>
                     <div className="font-semibold">{w.word}</div>
                     <div className="text-xs text-muted-foreground">{w.phonetic}</div>
@@ -130,8 +132,8 @@ export default function LessonScreen() {
               <CardContent className="p-5">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-accent uppercase">{lesson.topic}</span>
-                  <button className="flex items-center gap-1 text-accent" aria-label="Listen">
-                    <Volume2 className="h-5 w-5" /> <span className="text-sm">Listen</span>
+                  <button className="flex items-center gap-1 text-accent" aria-label="Listen" onClick={() => speak(lesson.passage)}>
+                    <AudioButton text={lesson.passage} /> <span className="text-sm">Listen</span>
                   </button>
                 </div>
                 <p className="text-lg leading-relaxed">{lesson.passage}</p>
@@ -169,8 +171,8 @@ export default function LessonScreen() {
               <CardContent className="p-5">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-accent uppercase">{lesson.documentType}</span>
-                  <button className="flex items-center gap-1 text-accent" aria-label="Listen">
-                    <Volume2 className="h-5 w-5" /> <span className="text-sm">Listen</span>
+                  <button className="flex items-center gap-1 text-accent" aria-label="Listen" onClick={() => speak(lesson.content)}>
+                    <AudioButton text={lesson.content} /> <span className="text-sm">Listen</span>
                   </button>
                 </div>
                 <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans">{lesson.content}</pre>
@@ -180,8 +182,8 @@ export default function LessonScreen() {
             <h2 className="text-lg font-bold mb-2">Key Vocabulary</h2>
             <div className="space-y-2 mb-6">
               {lesson.vocabulary.map((v) => (
-                <button key={v.word} className="flex w-full items-start gap-3 rounded-lg border border-border bg-card p-3 text-left min-h-[52px] hover:border-accent/40">
-                  <Volume2 className="h-4 w-4 text-accent mt-1 shrink-0" />
+                <button key={v.word} className="flex w-full items-start gap-3 rounded-lg border border-border bg-card p-3 text-left min-h-[52px] hover:border-accent/40" onClick={() => speak(`${v.word}. ${v.definition}`)}>
+                  <AudioButton text={`${v.word}. ${v.definition}`} className="mt-1" />
                   <div>
                     <span className="font-semibold">{v.word}</span>
                     <span className="text-xs text-muted-foreground ml-2">({v.phonetic})</span>
@@ -263,7 +265,7 @@ function SightWordCards({ words, onComplete }: { words: { word: string; definiti
       {words.map((w) => (
         <button
           key={w.word}
-          onClick={() => toggle(w.word)}
+          onClick={() => { toggle(w.word); speak(w.word); }}
           className={cn(
             "flex w-full flex-col rounded-lg border-2 p-4 text-left transition-colors min-h-[52px]",
             seen.has(w.word) ? "border-success/30" : "border-border",
@@ -271,7 +273,7 @@ function SightWordCards({ words, onComplete }: { words: { word: string; definiti
           )}
         >
           <div className="flex items-center gap-3">
-            <Volume2 className="h-4 w-4 text-accent shrink-0" />
+            <AudioButton text={w.word} />
             <span className="text-lg font-bold">{w.word}</span>
             {seen.has(w.word) && <Check className="h-4 w-4 text-success ml-auto" />}
           </div>
