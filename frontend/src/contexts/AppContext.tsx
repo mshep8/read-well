@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { AppState, UserProfile, LessonProgress } from "@/lib/types";
 import { loadState, saveProfile, saveLessonProgress, updateTextSize, resetProgress, clearAllData } from "@/lib/storage";
+import { getUser, DEFAULT_USER_ID } from "@/lib/api";
 
 interface AppContextValue {
   state: AppState;
@@ -51,6 +52,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const sizes = { small: "16px", medium: "18px", large: "22px" };
     document.documentElement.style.fontSize = sizes[state.textSize];
   }, [state.textSize]);
+
+  // Sync display name from backend on load (for persistence across refresh)
+  useEffect(() => {
+    getUser(DEFAULT_USER_ID)
+      .then((user) => {
+        if (!user.Name) return;
+        setState((prev) => {
+          if (prev.profile && prev.profile.name !== user.Name) {
+            return saveProfile({ ...prev.profile, name: user.Name });
+          }
+          return prev;
+        });
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <AppContext.Provider value={{ state, setProfile, completeLesson, changeTextSize, resetAllProgress, clearAll, isOnboarded }}>

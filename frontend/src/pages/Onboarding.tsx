@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useApp } from "@/contexts/AppContext";
 import { LessonCategory } from "@/lib/types";
+import { updateUserName, DEFAULT_USER_ID } from "@/lib/api";
 
 const levels = [
   { id: "phonics" as LessonCategory, label: "Letters & Sounds", desc: "Start with the basics", icon: Volume2 },
@@ -20,12 +21,18 @@ export default function Onboarding() {
   const navigate = useNavigate();
   const { setProfile } = useApp();
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
+    const displayName = name.trim() || "Learner";
     setProfile({
-      name: name.trim() || "Learner",
+      name: displayName,
       startingLevel: selectedLevel,
       createdAt: new Date().toISOString(),
     });
+    try {
+      await updateUserName(DEFAULT_USER_ID, displayName);
+    } catch {
+      // Continue even if backend fails; localStorage still has the name
+    }
     navigate("/dashboard");
   };
 

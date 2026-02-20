@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User, Type, RotateCcw, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,18 +6,35 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useApp } from "@/contexts/AppContext";
 import { BottomNav } from "@/components/BottomNav";
 import { cn } from "@/lib/utils";
+import { getUser, updateUserName, DEFAULT_USER_ID } from "@/lib/api";
 
 export default function SettingsScreen() {
   const { state, setProfile, changeTextSize, resetAllProgress } = useApp();
   const [name, setName] = useState(state.profile?.name || "");
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSaveName = () => {
-    if (state.profile) {
-      setProfile({ ...state.profile, name: name.trim() || "Learner" });
+  useEffect(() => {
+    getUser(DEFAULT_USER_ID)
+      .then((user) => setName(user.Name || ""))
+      .catch(() => setName(state.profile?.name || ""))
+      .finally(() => setLoading(false));
+  }, [state.profile?.name]);
+
+  const handleSaveName = async () => {
+    const newName = name.trim() || "Learner";
+    setError(null);
+    try {
+      await updateUserName(DEFAULT_USER_ID, newName);
+      if (state.profile) {
+        setProfile({ ...state.profile, name: newName });
+      }
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save");
     }
   };
 
@@ -39,11 +56,20 @@ export default function SettingsScreen() {
               <User className="h-5 w-5 text-accent" />
               <h2 className="font-bold text-lg">Display Name</h2>
             </div>
-            <div className="flex gap-2">
-              <Input value={name} onChange={(e) => setName(e.target.value)} className="text-lg min-h-[48px]" />
-              <Button onClick={handleSaveName} className="min-h-[48px]">
-                {saved ? "Saved!" : "Save"}
-              </Button>
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <Input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="text-lg min-h-[48px]"
+                  disabled={loading}
+                  placeholder={loading ? "Loading..." : "Your name"}
+                />
+                <Button onClick={handleSaveName} className="min-h-[48px]" disabled={loading}>
+                  {saved ? "Saved!" : "Save"}
+                </Button>
+              </div>
+              {error && <p className="text-sm text-destructive">{error}</p>}
             </div>
           </CardContent>
         </Card>
