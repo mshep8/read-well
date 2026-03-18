@@ -9,9 +9,38 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+function createPoolConfig() {
+  if (process.env.DATABASE_URL) {
+    const url = new URL(process.env.DATABASE_URL);
+    const config = {
+      host: url.hostname,
+      port: url.port ? Number(url.port) : 5432,
+      database: url.pathname.replace(/^\//, ""),
+    };
+
+    if (url.username) {
+      config.user = decodeURIComponent(url.username);
+    }
+
+    if (url.password) {
+      config.password = decodeURIComponent(url.password);
+    } else if (process.env.PGPASSWORD) {
+      config.password = process.env.PGPASSWORD;
+    }
+
+    return config;
+  }
+
+  return {
+    host: process.env.PGHOST || "localhost",
+    port: Number(process.env.PGPORT || 5432),
+    database: process.env.PGDATABASE || "learn2read",
+    user: process.env.PGUSER,
+    password: process.env.PGPASSWORD,
+  };
+}
+
+const pool = new pg.Pool(createPoolConfig());
 
 app.get("/api/health", async (_req, res) => {
   try {

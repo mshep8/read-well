@@ -99,10 +99,20 @@ Edit `backend/.env` if needed. Default:
 DATABASE_URL=postgresql://localhost:5432/learn2read
 ```
 
-Use your PostgreSQL username and password if required, e.g.:
+If your PostgreSQL instance requires a login, either add credentials to the URL:
 
 ```
 DATABASE_URL=postgresql://username:password@localhost:5432/learn2read
+```
+
+Or keep `DATABASE_URL` without credentials and set the standard PostgreSQL env vars:
+
+```
+PGHOST=localhost
+PGPORT=5432
+PGDATABASE=learn2read
+PGUSER=your_postgres_username
+PGPASSWORD=your_postgres_password
 ```
 
 ## Running the Application
