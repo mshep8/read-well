@@ -40,10 +40,10 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen pb-24">
-      <div className="mx-auto max-w-md px-5 pt-8">
+      <div className="mx-auto w-full max-w-md md:max-w-2xl px-4 sm:px-5 md:px-6 lg:px-8 pt-6 sm:pt-8">
         {/* Greeting */}
         <div className="mb-6 animate-fade-in">
-          <h1 className="text-3xl font-bold">Welcome back, {name}</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">Welcome back, {name}</h1>
           {state.streak > 0 && (
             <div className="mt-2 flex items-center gap-2 text-warm">
               <Flame className="h-5 w-5" />

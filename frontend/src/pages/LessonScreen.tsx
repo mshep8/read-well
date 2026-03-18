@@ -53,21 +53,21 @@ export default function LessonScreen() {
 
   return (
     <div className="min-h-screen pb-8">
-      <div className="mx-auto max-w-md px-5 pt-6">
+      <div className="mx-auto w-full max-w-md md:max-w-2xl px-4 sm:px-5 md:px-6 lg:px-8 pt-4 sm:pt-6">
         {/* Back button */}
         <button onClick={() => navigate(-1)} className="mb-4 flex items-center gap-2 text-muted-foreground hover:text-foreground min-h-[44px]">
           <ArrowLeft className="h-5 w-5" />
           <span>Back</span>
         </button>
 
-        <h1 className="text-2xl font-bold mb-2">{lesson.title}</h1>
+        <h1 className="text-xl sm:text-2xl font-bold mb-2">{lesson.title}</h1>
 
         {/* PHONICS */}
         {lesson.category === "phonics" && (
           <div className="animate-fade-in">
             <Card className="mb-6">
               <CardContent className="flex flex-col items-center p-8">
-                <div className="text-7xl font-bold text-accent mb-2">{lesson.letter}</div>
+                <div className="text-7xl sm:text-8xl font-bold text-accent mb-2">{lesson.letter}</div>
                 <p className="text-lg text-muted-foreground">{lesson.sound}</p>
                 <button className="mt-3 flex items-center gap-2 text-accent" aria-label="Listen to sound" onClick={() => speak(`${lesson.letter}. ${lesson.sound}`)}>
                   <AudioButton text={`${lesson.letter}. ${lesson.sound}`} />
@@ -77,7 +77,7 @@ export default function LessonScreen() {
             </Card>
 
             <h2 className="text-lg font-bold mb-3">Example Words</h2>
-            <div className="grid grid-cols-2 gap-2 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6">
               {lesson.exampleWords.map((w) => (
                 <button key={w.word} className="flex items-center gap-2 rounded-lg border border-border bg-card p-3 text-left min-h-[52px] hover:border-accent/40" onClick={() => speak(w.word)}>
                   <AudioButton text={w.word} />
@@ -227,14 +227,14 @@ export default function LessonScreen() {
                 </p>
               </CardContent>
             </Card>
-            <div className="mt-4 flex gap-3">
+            <div className="mt-4 flex flex-col sm:flex-row gap-3">
               {!isCorrect && (
-                <Button variant="secondary" className="flex-1 min-h-[52px] gap-2" onClick={handleRetry}>
+                <Button variant="secondary" className="flex-1 min-h-[52px] gap-2 w-full sm:w-auto" onClick={handleRetry}>
                   <RotateCcw className="h-5 w-5" />
                   Try Again
                 </Button>
               )}
-              <Button className="flex-1 min-h-[52px] gap-2" onClick={handleComplete}>
+              <Button className="flex-1 min-h-[52px] gap-2 w-full sm:w-auto" onClick={handleComplete}>
                 Next
                 <ArrowRight className="h-5 w-5" />
               </Button>

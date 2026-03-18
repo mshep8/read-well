@@ -28,14 +28,14 @@ export default function CategoryScreen() {
 
   return (
     <div className="min-h-screen pb-24">
-      <div className="mx-auto max-w-md px-5 pt-8">
+      <div className="mx-auto w-full max-w-md md:max-w-2xl px-4 sm:px-5 md:px-6 lg:px-8 pt-6 sm:pt-8">
         {/* Header */}
-        <div className="mb-6 flex items-center gap-3">
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10">
             <Icon className="h-6 w-6 text-accent" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">{cat.title}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold">{cat.title}</h1>
             <p className="text-sm text-muted-foreground">{cat.description}</p>
           </div>
         </div>

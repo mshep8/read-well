@@ -46,8 +46,8 @@ export default function SettingsScreen() {
 
   return (
     <div className="min-h-screen pb-24">
-      <div className="mx-auto max-w-md px-5 pt-8">
-        <h1 className="mb-6 text-3xl font-bold">Settings</h1>
+      <div className="mx-auto w-full max-w-md md:max-w-2xl px-4 sm:px-5 md:px-6 lg:px-8 pt-6 sm:pt-8">
+        <h1 className="mb-6 text-2xl sm:text-3xl font-bold">Settings</h1>
 
         {/* Name */}
         <Card className="mb-4">
@@ -57,15 +57,15 @@ export default function SettingsScreen() {
               <h2 className="font-bold text-lg">Display Name</h2>
             </div>
             <div className="flex flex-col gap-2">
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="text-lg min-h-[48px]"
+                  className="text-lg min-h-[48px] flex-1 min-w-0"
                   disabled={loading}
                   placeholder={loading ? "Loading..." : "Your name"}
                 />
-                <Button onClick={handleSaveName} className="min-h-[48px]" disabled={loading}>
+                <Button onClick={handleSaveName} className="min-h-[48px] sm:shrink-0" disabled={loading}>
                   {saved ? "Saved!" : "Save"}
                 </Button>
               </div>
@@ -81,7 +81,7 @@ export default function SettingsScreen() {
               <Type className="h-5 w-5 text-accent" />
               <h2 className="font-bold text-lg">Text Size</h2>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               {sizes.map((s) => (
                 <button
                   key={s.id}
@@ -112,7 +112,7 @@ export default function SettingsScreen() {
             ) : (
               <div>
                 <p className="mb-3 text-muted-foreground">Are you sure? This will erase all your progress. This cannot be undone.</p>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Button variant="secondary" className="flex-1 min-h-[48px]" onClick={() => setShowResetConfirm(false)}>
                     Cancel
                   </Button>

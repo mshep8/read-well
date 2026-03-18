@@ -97,12 +97,21 @@
     @apply border-border;
   }
 
+  html {
+    overflow-x: hidden;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: 'Source Sans 3', system-ui, -apple-system, sans-serif;
-    font-size: 18px;
+    font-size: clamp(16px, 2.5vw, 18px);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    /* Safe area for mobile notches */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   h1, h2, h3 {

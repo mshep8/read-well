@@ -23,11 +23,11 @@ export default function ProgressScreen() {
 
   return (
     <div className="min-h-screen pb-24">
-      <div className="mx-auto max-w-md px-5 pt-8">
-        <h1 className="mb-6 text-3xl font-bold">Your Progress</h1>
+      <div className="mx-auto w-full max-w-md md:max-w-2xl px-4 sm:px-5 md:px-6 lg:px-8 pt-6 sm:pt-8">
+        <h1 className="mb-6 text-2xl sm:text-3xl font-bold">Your Progress</h1>
 
         {/* Stats row */}
-        <div className="mb-6 grid grid-cols-3 gap-3">
+        <div className="mb-6 grid grid-cols-2 sm:grid-cols-3 gap-3">
           <Card>
             <CardContent className="flex flex-col items-center p-4">
               <BookOpen className="h-6 w-6 text-accent mb-1" />

@@ -37,8 +37,8 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-6">
-      <div className="w-full max-w-sm animate-fade-in">
+    <div className="flex min-h-screen flex-col items-center justify-center px-4 sm:px-6 md:px-8">
+      <div className="w-full max-w-sm sm:max-w-md md:max-w-lg animate-fade-in">
         {/* Progress dots */}
         <div className="mb-8 flex justify-center gap-2">
           {[0, 1].map((i) => (
@@ -54,7 +54,7 @@ export default function Onboarding() {
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
               <User className="h-8 w-8 text-accent" />
             </div>
-            <h2 className="text-2xl font-bold">What should we call you?</h2>
+            <h2 className="text-xl sm:text-2xl font-bold">What should we call you?</h2>
             <p className="mt-2 text-muted-foreground">First name is fine — this is just for you.</p>
 
             <Input
@@ -78,7 +78,7 @@ export default function Onboarding() {
 
         {step === 1 && (
           <div className="flex flex-col items-center text-center">
-            <h2 className="text-2xl font-bold">Where would you like to start?</h2>
+            <h2 className="text-xl sm:text-2xl font-bold">Where would you like to start?</h2>
             <p className="mt-2 text-muted-foreground">You can change this anytime. There's no wrong answer.</p>
 
             <div className="mt-6 flex w-full flex-col gap-3">
@@ -86,14 +86,14 @@ export default function Onboarding() {
                 <button
                   key={id}
                   onClick={() => setSelectedLevel(id)}
-                  className={`flex items-center gap-4 rounded-lg border-2 p-4 text-left transition-colors min-h-[64px] ${
+                  className={`flex items-center gap-3 sm:gap-4 rounded-lg border-2 p-3 sm:p-4 text-left transition-colors min-h-[64px] ${
                     selectedLevel === id
                       ? "border-accent bg-accent/5"
                       : "border-border hover:border-accent/40"
                   }`}
                 >
-                  <Icon className="h-6 w-6 shrink-0 text-accent" />
-                  <div>
+                  <Icon className="h-5 w-5 sm:h-6 sm:w-6 shrink-0 text-accent" />
+                  <div className="min-w-0 flex-1">
                     <div className="font-semibold">{label}</div>
                     <div className="text-sm text-muted-foreground">{desc}</div>
                   </div>
