@@ -4,6 +4,8 @@
 
 READ. is a reading application designed to help illiterate adults learn to read. Adult literacy is a significant challenge—many adults struggle with basic reading skills, which limits their opportunities for employment, healthcare, and daily life. This app addresses that problem by providing structured, accessible lessons that build reading skills from the ground up. The primary users are adults who are beginning or rebuilding their literacy journey, often learning at their own pace in private. The product offers phonics-based lessons, sight word practice, sentence reading, and real-world document exercises. Users can track their progress, customize their experience (including display name and text size), and learn without judgment or time pressure.
 
+**Repository:** [mshep8/read-well](https://github.com/mshep8/read-well)
+
 ## Tech Stack
 
 | Layer | Technologies |
@@ -14,6 +16,18 @@ READ. is a reading application designed to help illiterate adults learn to read.
 | **Database** | PostgreSQL |
 | **Authentication** | None (single-user / device-local for vertical slice) |
 | **External Services** | None |
+
+## EARS Requirements
+
+The following requirements are written using the **EARS** (Easy Approach to Requirements Syntax) patterns.
+
+| Pattern | Requirement Statement |
+|--------|------------------------|
+| **Ubiquitous** | The application shall use a single, shared design system (Tailwind CSS + shadcn/ui theme tokens) to provide a consistent visual theme across all pages and components. |
+| **Event-Driven** | When a user clicks a navigation control (e.g., bottom navigation or in-app links), the application shall navigate to the destination route using React Router without a full page reload. |
+| **State-Driven** | While the user is viewing a route that corresponds to a navigation item, the navigation UI shall highlight the active item to indicate the current location. |
+| **Optional Feature** | Where the Settings screen is accessed, the application shall allow the user to update their display name and persist the change in the PostgreSQL database (via `PATCH /api/users/1`). |
+| **Unwanted Behavior** | If a user attempts to access a non-existent route, the application shall display a standard “Not Found (404)” page with a way to return to a valid screen. |
 
 ## Architecture Diagram
 
@@ -62,7 +76,7 @@ The following software must be installed and available in your system PATH:
 ### 1. Clone the repository
 
 ```sh
-git clone <YOUR_GIT_URL>
+git clone https://github.com/mshep8/read-well.git
 cd read-well
 ```
 
