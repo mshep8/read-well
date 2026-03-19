@@ -167,9 +167,9 @@ The vertical slice is **editing the display name in Settings** and having it per
 
 4. **Confirm the database was updated**:
    ```sh
-   psql learn2read -c 'SELECT "UserID", "Name" FROM "Users" WHERE "UserID" = 1;'
+   psql learn2read -c 'SELECT userid, name FROM users WHERE userid = 1;'
    ```
-   You should see the updated name in the `Name` column.
+   You should see the updated name in the `name` column.
 
 5. **Verify persistence after refresh**: Refresh the page (F5 or Cmd+R). The display name should still show your updated value (loaded from the database and synced to the app).
 

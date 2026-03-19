@@ -55,7 +55,7 @@ app.get("/api/health", async (_req, res) => {
 app.get("/api/users/:id", async (req, res) => {
   try {
     const { rows } = await pool.query(
-      "SELECT \"UserID\", \"Name\", \"Email\" FROM \"Users\" WHERE \"UserID\" = $1",
+      "SELECT userid AS \"UserID\", name AS \"Name\", email AS \"Email\" FROM users WHERE userid = $1",
       [req.params.id]
     );
     if (rows.length === 0) return res.status(404).json({ error: "User not found" });
@@ -73,7 +73,7 @@ app.patch("/api/users/:id", async (req, res) => {
   }
   try {
     const { rows } = await pool.query(
-      "UPDATE \"Users\" SET \"Name\" = $1 WHERE \"UserID\" = $2 RETURNING \"UserID\", \"Name\", \"Email\"",
+      "UPDATE users SET name = $1 WHERE userid = $2 RETURNING userid AS \"UserID\", name AS \"Name\", email AS \"Email\"",
       [name.trim(), req.params.id]
     );
     if (rows.length === 0) return res.status(404).json({ error: "User not found" });
