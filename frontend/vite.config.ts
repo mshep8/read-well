@@ -11,6 +11,10 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       overlay: false,
     },
+    allowedHosts: [
+      'bmeek.org',
+      'learn2read.bmeek.org'
+    ],
     proxy: {
       "/api": "http://localhost:3001",
     },
