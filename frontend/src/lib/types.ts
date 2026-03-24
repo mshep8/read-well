@@ -11,6 +11,16 @@ export interface LessonProgress {
   completed: boolean;
   score?: number;
   completedAt?: string;
+  /** How many quiz questions were answered correctly (when lesson has a quiz) */
+  quizCorrect?: number;
+  /** Total quiz questions in that lesson */
+  quizTotal?: number;
+}
+
+/** Optional quiz summary passed when completing a lesson */
+export interface QuizSummary {
+  correctCount: number;
+  total: number;
 }
 
 export interface AppState {
@@ -33,6 +43,8 @@ export interface PhonicsLesson {
     targetSound: string;
     options: string[];
     correctIndex: number;
+    /** Why the correct answer is right (and others are not) */
+    explanation: string;
   };
 }
 
@@ -49,7 +61,7 @@ export interface SentenceLesson {
   title: string;
   passage: string;
   topic: string;
-  questions: { question: string; options: string[]; correctIndex: number }[];
+  questions: { question: string; options: string[]; correctIndex: number; explanation: string }[];
 }
 
 export interface RealWorldLesson {
@@ -59,7 +71,7 @@ export interface RealWorldLesson {
   documentType: string;
   content: string;
   vocabulary: { word: string; definition: string; phonetic: string }[];
-  questions: { question: string; options: string[]; correctIndex: number }[];
+  questions: { question: string; options: string[]; correctIndex: number; explanation: string }[];
 }
 
 export type Lesson = PhonicsLesson | SightWordLesson | SentenceLesson | RealWorldLesson;

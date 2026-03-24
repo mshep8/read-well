@@ -1,23 +1,63 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, X, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, X, RotateCcw, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useApp } from "@/contexts/AppContext";
 import { getLessonById, getLessonsByCategory } from "@/lib/lessonData";
 import { cn } from "@/lib/utils";
 import { AudioButton } from "@/components/AudioButton";
-import { speak } from "@/lib/speak";
+import { PassageSpeechControls } from "@/components/PassageSpeechControls";
+import {
+  speak,
+  speakSequence,
+  buildPhonicsIntroParts,
+  buildVocabularySpeechParts,
+  passageToSpeechParts,
+} from "@/lib/speak";
+import type { Lesson } from "@/lib/types";
 
 export default function LessonScreen() {
   const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
-  const { state, completeLesson } = useApp();
+  const { completeLesson } = useApp();
   const lesson = getLessonById(lessonId || "");
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [answered, setAnswered] = useState(false);
+  /** Sentence / real-world: which question in the list */
+  const [questionIndex, setQuestionIndex] = useState(0);
+  /** Completed answers for multi-question lessons (before current is finalized on continue) */
+  const [priorResults, setPriorResults] = useState<boolean[]>([]);
+
+  useEffect(() => {
+    setQuestionIndex(0);
+    setPriorResults([]);
+    setAnswered(false);
+    setSelectedAnswer(null);
+  }, [lessonId]);
 
   if (!lesson) return <div className="p-8 text-center">Lesson not found</div>;
+
+  const multiQuiz =
+    lesson.category === "sentences" || lesson.category === "real-world" ? lesson.questions : null;
+  const totalQuestions = multiQuiz?.length ?? 0;
+  const currentQuestion = multiQuiz?.[questionIndex];
+
+  const getCorrectIndex = (): number => {
+    if (lesson.category === "phonics") return lesson.exercise.correctIndex;
+    if (lesson.category === "sentences" || lesson.category === "real-world") {
+      return currentQuestion?.correctIndex ?? -1;
+    }
+    return -1;
+  };
+
+  const currentExplanation = useMemo(() => {
+    if (lesson.category === "phonics") return lesson.exercise.explanation;
+    if (currentQuestion) return currentQuestion.explanation;
+    return "";
+  }, [lesson, currentQuestion]);
+
+  const isCorrect = selectedAnswer !== null && selectedAnswer === getCorrectIndex();
 
   const handleAnswer = (index: number) => {
     if (answered) return;
@@ -25,24 +65,13 @@ export default function LessonScreen() {
     setAnswered(true);
   };
 
-  const getCorrectIndex = () => {
-    if (lesson.category === "phonics") return lesson.exercise.correctIndex;
-    if (lesson.category === "sentences") return lesson.questions[0]?.correctIndex;
-    if (lesson.category === "real-world") return lesson.questions[0]?.correctIndex;
-    return -1;
-  };
-
-  const isCorrect = selectedAnswer === getCorrectIndex();
-
-  const handleComplete = () => {
-    completeLesson(lesson.id, isCorrect ? 100 : 50);
-    // Navigate to next lesson or back
-    const siblings = getLessonsByCategory(lesson.category);
-    const currentIdx = siblings.findIndex((l) => l.id === lesson.id);
+  const navigateAfterLesson = (finishedLesson: Lesson) => {
+    const siblings = getLessonsByCategory(finishedLesson.category);
+    const currentIdx = siblings.findIndex((l) => l.id === finishedLesson.id);
     if (currentIdx < siblings.length - 1) {
       navigate(`/lesson/${siblings[currentIdx + 1].id}`);
     } else {
-      navigate(`/category/${lesson.category}`);
+      navigate(`/category/${finishedLesson.category}`);
     }
   };
 
@@ -51,11 +80,44 @@ export default function LessonScreen() {
     setAnswered(false);
   };
 
+  /** Phonics: one question — finish and save */
+  const finishPhonicsLesson = () => {
+    const correct = selectedAnswer === getCorrectIndex();
+    completeLesson(lesson.id, correct ? 100 : 50, { correctCount: correct ? 1 : 0, total: 1 });
+    navigateAfterLesson(lesson);
+  };
+
+  /** Multi-question: continue to next or finish */
+  const handleContinueMultiQuiz = () => {
+    if (!multiQuiz || selectedAnswer === null) return;
+    const correct = selectedAnswer === getCorrectIndex();
+    const combined = [...priorResults, correct];
+
+    if (questionIndex < totalQuestions - 1) {
+      setPriorResults(combined);
+      setQuestionIndex((i) => i + 1);
+      setAnswered(false);
+      setSelectedAnswer(null);
+      return;
+    }
+
+    const correctCount = combined.filter(Boolean).length;
+    const total = combined.length;
+    const pct = total ? Math.round((correctCount / total) * 100) : 0;
+    completeLesson(lesson.id, pct, { correctCount, total });
+    navigateAfterLesson(lesson);
+  };
+
+  const showQuizFeedback = answered && (lesson.category === "phonics" || currentQuestion);
+
   return (
     <div className="min-h-screen pb-8">
       <div className="mx-auto w-full max-w-md md:max-w-2xl px-4 sm:px-5 md:px-6 lg:px-8 pt-4 sm:pt-6">
-        {/* Back button */}
-        <button onClick={() => navigate(-1)} className="mb-4 flex items-center gap-2 text-muted-foreground hover:text-foreground min-h-[44px]">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="mb-4 flex items-center gap-2 text-muted-foreground hover:text-foreground min-h-[44px]"
+        >
           <ArrowLeft className="h-5 w-5" />
           <span>Back</span>
         </button>
@@ -69,19 +131,29 @@ export default function LessonScreen() {
               <CardContent className="flex flex-col items-center p-8">
                 <div className="text-7xl sm:text-8xl font-bold text-accent mb-2">{lesson.letter}</div>
                 <p className="text-lg text-muted-foreground">{lesson.sound}</p>
-                <button className="mt-3 flex items-center gap-2 text-accent" aria-label="Listen to sound" onClick={() => speak(`${lesson.letter}. ${lesson.sound}`)}>
-                  <AudioButton text={`${lesson.letter}. ${lesson.sound}`} />
-                  <span>Listen</span>
-                </button>
+                <div className="mt-3 flex items-center gap-2 text-accent">
+                  <AudioButton
+                    parts={buildPhonicsIntroParts(lesson.letter, lesson.sound)}
+                    label="letter and sound"
+                    size="default"
+                    className="text-accent"
+                  />
+                  <span className="text-sm">Listen</span>
+                </div>
               </CardContent>
             </Card>
 
             <h2 className="text-lg font-bold mb-3">Example Words</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6">
               {lesson.exampleWords.map((w) => (
-                <button key={w.word} className="flex items-center gap-2 rounded-lg border border-border bg-card p-3 text-left min-h-[52px] hover:border-accent/40" onClick={() => speak(w.word)}>
-                  <AudioButton text={w.word} />
-                  <div>
+                <button
+                  key={w.word}
+                  type="button"
+                  className="flex items-center gap-3 rounded-lg border border-border bg-card p-3 text-left min-h-[52px] hover:border-accent/40 w-full"
+                  onClick={() => speak(w.word)}
+                >
+                  <Volume2 className="h-5 w-5 text-accent shrink-0" aria-hidden />
+                  <div className="min-w-0">
                     <div className="font-semibold">{w.word}</div>
                     <div className="text-xs text-muted-foreground">{w.phonetic}</div>
                   </div>
@@ -95,6 +167,7 @@ export default function LessonScreen() {
               {lesson.exercise.options.map((opt, i) => (
                 <button
                   key={opt}
+                  type="button"
                   onClick={() => handleAnswer(i)}
                   disabled={answered}
                   className={cn(
@@ -117,7 +190,7 @@ export default function LessonScreen() {
         {lesson.category === "sight-words" && (
           <div className="animate-fade-in">
             <p className="mb-4 text-muted-foreground">Tap each word to see its meaning.</p>
-            <SightWordCards words={lesson.words} onComplete={() => completeLesson(lesson.id, 100)} />
+            <SightWordCards words={lesson.words} onComplete={() => completeLesson(lesson.id, 100, { correctCount: lesson.words.length, total: lesson.words.length })} />
             <Button className="mt-6 w-full min-h-[52px] gap-2" onClick={() => navigate(`/category/${lesson.category}`)}>
               Done
               <Check className="h-5 w-5" />
@@ -126,26 +199,30 @@ export default function LessonScreen() {
         )}
 
         {/* SENTENCES */}
-        {lesson.category === "sentences" && (
+        {lesson.category === "sentences" && currentQuestion && (
           <div className="animate-fade-in">
             <Card className="mb-6">
               <CardContent className="p-5">
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-2">
                   <span className="text-sm font-medium text-accent uppercase">{lesson.topic}</span>
-                  <button className="flex items-center gap-1 text-accent" aria-label="Listen" onClick={() => speak(lesson.passage)}>
-                    <AudioButton text={lesson.passage} /> <span className="text-sm">Listen</span>
-                  </button>
+                  <PassageSpeechControls parts={passageToSpeechParts(lesson.passage)} />
                 </div>
                 <p className="text-lg leading-relaxed">{lesson.passage}</p>
               </CardContent>
             </Card>
 
-            <h2 className="text-lg font-bold mb-3">Check Your Understanding</h2>
-            <p className="mb-4 text-muted-foreground">{lesson.questions[0]?.question}</p>
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <h2 className="text-lg font-bold">Check your understanding</h2>
+              <span className="text-sm text-muted-foreground whitespace-nowrap">
+                Question {questionIndex + 1} of {totalQuestions}
+              </span>
+            </div>
+            <p className="mb-4 text-muted-foreground">{currentQuestion.question}</p>
             <div className="space-y-2">
-              {lesson.questions[0]?.options.map((opt, i) => (
+              {currentQuestion.options.map((opt, i) => (
                 <button
                   key={opt}
+                  type="button"
                   onClick={() => handleAnswer(i)}
                   disabled={answered}
                   className={cn(
@@ -165,26 +242,29 @@ export default function LessonScreen() {
         )}
 
         {/* REAL-WORLD */}
-        {lesson.category === "real-world" && (
+        {lesson.category === "real-world" && currentQuestion && (
           <div className="animate-fade-in">
             <Card className="mb-4">
               <CardContent className="p-5">
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-2">
                   <span className="text-sm font-medium text-accent uppercase">{lesson.documentType}</span>
-                  <button className="flex items-center gap-1 text-accent" aria-label="Listen" onClick={() => speak(lesson.content)}>
-                    <AudioButton text={lesson.content} /> <span className="text-sm">Listen</span>
-                  </button>
+                  <PassageSpeechControls parts={passageToSpeechParts(lesson.content)} />
                 </div>
                 <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans">{lesson.content}</pre>
               </CardContent>
             </Card>
 
-            <h2 className="text-lg font-bold mb-2">Key Vocabulary</h2>
+            <h2 className="text-lg font-bold mb-2">Key vocabulary</h2>
             <div className="space-y-2 mb-6">
               {lesson.vocabulary.map((v) => (
-                <button key={v.word} className="flex w-full items-start gap-3 rounded-lg border border-border bg-card p-3 text-left min-h-[52px] hover:border-accent/40" onClick={() => speak(`${v.word}. ${v.definition}`)}>
-                  <AudioButton text={`${v.word}. ${v.definition}`} className="mt-1" />
-                  <div>
+                <button
+                  key={v.word}
+                  type="button"
+                  className="flex w-full items-start gap-3 rounded-lg border border-border bg-card p-3 text-left min-h-[52px] hover:border-accent/40"
+                  onClick={() => speakSequence(buildVocabularySpeechParts(v.word, v.phonetic, v.definition))}
+                >
+                  <Volume2 className="h-5 w-5 text-accent shrink-0 mt-0.5" aria-hidden />
+                  <div className="min-w-0">
                     <span className="font-semibold">{v.word}</span>
                     <span className="text-xs text-muted-foreground ml-2">({v.phonetic})</span>
                     <p className="text-sm text-muted-foreground">{v.definition}</p>
@@ -193,12 +273,18 @@ export default function LessonScreen() {
               ))}
             </div>
 
-            <h2 className="text-lg font-bold mb-3">Check Your Understanding</h2>
-            <p className="mb-4 text-muted-foreground">{lesson.questions[0]?.question}</p>
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <h2 className="text-lg font-bold">Check your understanding</h2>
+              <span className="text-sm text-muted-foreground whitespace-nowrap">
+                Question {questionIndex + 1} of {totalQuestions}
+              </span>
+            </div>
+            <p className="mb-4 text-muted-foreground">{currentQuestion.question}</p>
             <div className="space-y-2">
-              {lesson.questions[0]?.options.map((opt, i) => (
+              {currentQuestion.options.map((opt, i) => (
                 <button
                   key={opt}
+                  type="button"
                   onClick={() => handleAnswer(i)}
                   disabled={answered}
                   className={cn(
@@ -217,27 +303,53 @@ export default function LessonScreen() {
           </div>
         )}
 
-        {/* Feedback & navigation */}
-        {answered && (
-          <div className="mt-6 animate-fade-in">
+        {/* Feedback & actions */}
+        {showQuizFeedback && (
+          <div className="mt-6 animate-fade-in space-y-4">
             <Card className={isCorrect ? "border-success/30 bg-success/5" : "border-warm/30 bg-warm/5"}>
-              <CardContent className="p-4 text-center">
-                <p className="text-lg font-semibold">
-                  {isCorrect ? "That's right! Well done." : "Not quite — that's okay. Learning takes practice."}
+              <CardContent className="p-4 sm:p-5">
+                <p className="text-lg font-semibold mb-2">
+                  {isCorrect ? "That's right!" : "Not quite."}
                 </p>
+                <p className="text-base text-foreground leading-relaxed">{currentExplanation}</p>
               </CardContent>
             </Card>
-            <div className="mt-4 flex flex-col sm:flex-row gap-3">
+
+            {multiQuiz && answered && (
+              <p className="text-sm text-muted-foreground text-center">
+                Running score:{" "}
+                {priorResults.filter(Boolean).length + (isCorrect ? 1 : 0)} of {priorResults.length + 1} correct
+              </p>
+            )}
+
+            <div className="flex flex-col sm:flex-row gap-3">
               {!isCorrect && (
                 <Button variant="secondary" className="flex-1 min-h-[52px] gap-2 w-full sm:w-auto" onClick={handleRetry}>
                   <RotateCcw className="h-5 w-5" />
-                  Try Again
+                  Try again
                 </Button>
               )}
-              <Button className="flex-1 min-h-[52px] gap-2 w-full sm:w-auto" onClick={handleComplete}>
-                Next
-                <ArrowRight className="h-5 w-5" />
-              </Button>
+              {lesson.category === "phonics" && (
+                <Button className="flex-1 min-h-[52px] gap-2 w-full sm:w-auto" onClick={finishPhonicsLesson}>
+                  Next lesson
+                  <ArrowRight className="h-5 w-5" />
+                </Button>
+              )}
+              {(lesson.category === "sentences" || lesson.category === "real-world") && (
+                <Button className="flex-1 min-h-[52px] gap-2 w-full sm:w-auto" onClick={handleContinueMultiQuiz}>
+                  {questionIndex < totalQuestions - 1 ? (
+                    <>
+                      Next question
+                      <ArrowRight className="h-5 w-5" />
+                    </>
+                  ) : (
+                    <>
+                      Finish lesson
+                      <Check className="h-5 w-5" />
+                    </>
+                  )}
+                </Button>
+              )}
             </div>
           </div>
         )}
@@ -246,18 +358,25 @@ export default function LessonScreen() {
   );
 }
 
-// Sight word expandable cards
 function SightWordCards({ words, onComplete }: { words: { word: string; definition: string; sentence: string }[]; onComplete: () => void }) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [seen, setSeen] = useState<Set<string>>(new Set());
 
-  const toggle = (word: string) => {
-    setExpanded(expanded === word ? null : word);
+  const onCardClick = (word: string) => {
+    const willExpand = expanded !== word;
+    setExpanded(willExpand ? word : null);
     setSeen((prev) => {
       const next = new Set(prev).add(word);
       if (next.size === words.length) onComplete();
       return next;
     });
+    const w = words.find((x) => x.word === word);
+    if (!w) return;
+    if (willExpand) {
+      speakSequence([w.word, w.definition, `Example sentence: ${w.sentence}`]);
+    } else {
+      speak(w.word);
+    }
   };
 
   return (
@@ -265,7 +384,8 @@ function SightWordCards({ words, onComplete }: { words: { word: string; definiti
       {words.map((w) => (
         <button
           key={w.word}
-          onClick={() => { toggle(w.word); speak(w.word); }}
+          type="button"
+          onClick={() => onCardClick(w.word)}
           className={cn(
             "flex w-full flex-col rounded-lg border-2 p-4 text-left transition-colors min-h-[52px]",
             seen.has(w.word) ? "border-success/30" : "border-border",
@@ -273,7 +393,7 @@ function SightWordCards({ words, onComplete }: { words: { word: string; definiti
           )}
         >
           <div className="flex items-center gap-3">
-            <AudioButton text={w.word} />
+            <Volume2 className="h-5 w-5 text-accent shrink-0" aria-hidden />
             <span className="text-lg font-bold">{w.word}</span>
             {seen.has(w.word) && <Check className="h-4 w-4 text-success ml-auto" />}
           </div>

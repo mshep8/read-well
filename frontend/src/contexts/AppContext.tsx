@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { AppState, UserProfile, LessonProgress } from "@/lib/types";
+import { AppState, UserProfile, LessonProgress, QuizSummary } from "@/lib/types";
 import { loadState, saveProfile, saveLessonProgress, updateTextSize, resetProgress, clearAllData } from "@/lib/storage";
 import { getUser, DEFAULT_USER_ID } from "@/lib/api";
 
 interface AppContextValue {
   state: AppState;
   setProfile: (profile: UserProfile) => void;
-  completeLesson: (lessonId: string, score?: number) => void;
+  completeLesson: (lessonId: string, score?: number, quiz?: QuizSummary) => void;
   changeTextSize: (size: "small" | "medium" | "large") => void;
   resetAllProgress: () => void;
   clearAll: () => void;
@@ -24,12 +24,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setState(saveProfile(profile));
   }, []);
 
-  const completeLesson = useCallback((lessonId: string, score?: number) => {
+  const completeLesson = useCallback((lessonId: string, score?: number, quiz?: QuizSummary) => {
     const progress: LessonProgress = {
       lessonId,
       completed: true,
       score,
       completedAt: new Date().toISOString(),
+      ...(quiz && { quizCorrect: quiz.correctCount, quizTotal: quiz.total }),
     };
     setState(saveLessonProgress(lessonId, progress));
   }, []);
