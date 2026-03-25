@@ -189,7 +189,9 @@ export default function LessonScreen() {
         {/* SIGHT WORDS */}
         {lesson.category === "sight-words" && (
           <div className="animate-fade-in">
-            <p className="mb-4 text-muted-foreground">Tap each word to see its meaning.</p>
+            <p className="mb-4 text-muted-foreground">
+              Tap a word to open it. Use the speaker to hear the word, meaning, and example.
+            </p>
             <SightWordCards words={lesson.words} onComplete={() => completeLesson(lesson.id, 100, { correctCount: lesson.words.length, total: lesson.words.length })} />
             <Button className="mt-6 w-full min-h-[52px] gap-2" onClick={() => navigate(`/category/${lesson.category}`)}>
               Done
@@ -370,40 +372,41 @@ function SightWordCards({ words, onComplete }: { words: { word: string; definiti
       if (next.size === words.length) onComplete();
       return next;
     });
-    const w = words.find((x) => x.word === word);
-    if (!w) return;
-    if (willExpand) {
-      speakSequence([w.word, w.definition, `Example sentence: ${w.sentence}`]);
-    } else {
-      speak(w.word);
-    }
   };
 
   return (
     <div className="space-y-2">
       {words.map((w) => (
-        <button
+        <div
           key={w.word}
-          type="button"
-          onClick={() => onCardClick(w.word)}
           className={cn(
-            "flex w-full flex-col rounded-lg border-2 p-4 text-left transition-colors min-h-[52px]",
+            "flex w-full flex-col rounded-lg border-2 text-left transition-colors overflow-hidden",
             seen.has(w.word) ? "border-success/30" : "border-border",
             expanded === w.word && "bg-card"
           )}
         >
-          <div className="flex items-center gap-3">
-            <Volume2 className="h-5 w-5 text-accent shrink-0" aria-hidden />
+          <button
+            type="button"
+            onClick={() => onCardClick(w.word)}
+            className="flex w-full items-center gap-3 p-4 text-left min-h-[52px] hover:bg-accent/5 transition-colors"
+          >
             <span className="text-lg font-bold">{w.word}</span>
-            {seen.has(w.word) && <Check className="h-4 w-4 text-success ml-auto" />}
-          </div>
+            {seen.has(w.word) && <Check className="h-4 w-4 text-success ml-auto shrink-0" aria-hidden />}
+          </button>
           {expanded === w.word && (
-            <div className="mt-3 pl-7">
-              <p className="text-muted-foreground">{w.definition}</p>
-              <p className="mt-2 text-sm italic">"{w.sentence}"</p>
+            <div className="flex gap-3 border-t border-border px-4 py-3">
+              <AudioButton
+                parts={[w.word, w.definition, `Example sentence: ${w.sentence}`]}
+                label={`Read ${w.word}, its meaning, and example sentence`}
+                className="shrink-0"
+              />
+              <div className="min-w-0 flex-1 pt-0.5">
+                <p className="text-muted-foreground">{w.definition}</p>
+                <p className="mt-2 text-sm italic">"{w.sentence}"</p>
+              </div>
             </div>
           )}
-        </button>
+        </div>
       ))}
     </div>
   );
