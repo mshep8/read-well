@@ -18,6 +18,8 @@ export const phonicsLessons: PhonicsLesson[] = [
       targetSound: "a",
       options: ["apple", "open", "under", "eagle"],
       correctIndex: 0,
+      explanation:
+        "Apple starts with the short A sound (like the A in cat). Open uses a long O sound, under starts with a short U, and eagle starts with a long E sound.",
     },
   },
   {
@@ -37,6 +39,8 @@ export const phonicsLessons: PhonicsLesson[] = [
       targetSound: "e",
       options: ["meet", "best", "tree", "key"],
       correctIndex: 1,
+      explanation:
+        "Best has the short E sound (like in bed). Meet, tree, and key use long E sounds.",
     },
   },
   {
@@ -56,6 +60,8 @@ export const phonicsLessons: PhonicsLesson[] = [
       targetSound: "i",
       options: ["ride", "kind", "gift", "like"],
       correctIndex: 2,
+      explanation:
+        "Gift has the short I sound (like in sit). Ride, kind, and like use long I sounds.",
     },
   },
   {
@@ -75,6 +81,8 @@ export const phonicsLessons: PhonicsLesson[] = [
       targetSound: "sh",
       options: ["chart", "show", "slow", "throw"],
       correctIndex: 1,
+      explanation:
+        "Show begins with SH. Chart starts with CH, slow and throw start with other consonant blends.",
     },
   },
   {
@@ -94,6 +102,8 @@ export const phonicsLessons: PhonicsLesson[] = [
       targetSound: "th",
       options: ["free", "tree", "thick", "trick"],
       correctIndex: 2,
+      explanation:
+        "Thick begins with the TH sound (like in think). Free and tree start with other sounds, and trick starts with TR.",
     },
   },
 ];
@@ -164,6 +174,20 @@ export const sentenceLessons: SentenceLesson[] = [
         question: "How many hours of sleep do most adults need?",
         options: ["4 to 5 hours", "7 to 9 hours", "10 to 12 hours", "It doesn't matter"],
         correctIndex: 1,
+        explanation:
+          "The passage says most adults need 7 to 9 hours of sleep each night.",
+      },
+      {
+        question: "According to the passage, what can happen if you don't sleep enough?",
+        options: [
+          "You always feel relaxed",
+          "It may be hard to focus and you might feel more stressed or get sick more often",
+          "You never get sick",
+          "You need less sleep over time",
+        ],
+        correctIndex: 1,
+        explanation:
+          "The passage says that when you don't sleep enough, it can be hard to focus at work, and you might feel more stressed or get sick more often.",
       },
     ],
   },
@@ -178,6 +202,20 @@ export const sentenceLessons: SentenceLesson[] = [
         question: "What should you do if you don't understand something at a new job?",
         options: ["Stay quiet", "Ask questions", "Leave early", "Skip training"],
         correctIndex: 1,
+        explanation:
+          "The passage says it is okay to ask questions and that your coworkers expect you to ask.",
+      },
+      {
+        question: "What does the passage suggest about your first day?",
+        options: [
+          "Arrive late so you are not early",
+          "Arrive a few minutes early",
+          "Skip the first day",
+          "Avoid talking to anyone",
+        ],
+        correctIndex: 1,
+        explanation:
+          "The passage says that on your first day, you should arrive a few minutes early.",
       },
     ],
   },
@@ -192,6 +230,15 @@ export const sentenceLessons: SentenceLesson[] = [
         question: "What should you have ready before you board the bus?",
         options: ["Your driver's license", "Your fare", "A map", "Your phone number"],
         correctIndex: 1,
+        explanation:
+          "The passage says to have your fare ready before you board.",
+      },
+      {
+        question: "Where can you check a bus schedule, according to the passage?",
+        options: ["Only on TV", "Online or at the stop", "Never — schedules are not available", "Only in a letter"],
+        correctIndex: 1,
+        explanation:
+          "The passage says most buses have a schedule you can check online or at the stop.",
       },
     ],
   },
@@ -237,6 +284,20 @@ Signature: _______________ Date: _______________`,
         question: "What does 'authorized' mean on this form?",
         options: ["Interested in", "Having permission", "Wanting to", "Required to"],
         correctIndex: 1,
+        explanation:
+          "Authorized means having official permission. Here it asks if you are legally allowed to work in this country.",
+      },
+      {
+        question: "The form asks for your most recent employer. What is that asking for?",
+        options: [
+          "Your favorite restaurant",
+          "The place where you last worked",
+          "Your school name",
+          "A friend's employer",
+        ],
+        correctIndex: 1,
+        explanation:
+          "Employment history asks for where you worked before — your most recent employer is the job you had last.",
       },
     ],
   },
@@ -280,6 +341,20 @@ Store at room temperature. Keep out of reach of children.`,
         question: "How many tablets can you take in 24 hours without asking a doctor?",
         options: ["1 tablet", "2 tablets", "3 tablets", "As many as needed"],
         correctIndex: 2,
+        explanation:
+          "The directions say: Do not take more than 3 tablets in 24 hours unless directed by a doctor — so you may take up to 3 without asking first.",
+      },
+      {
+        question: "According to the warnings, when should you not use this medicine?",
+        options: [
+          "If you have a headache",
+          "If you have ever had an allergic reaction to any pain reliever",
+          "If you are over 12",
+          "If you take it with water",
+        ],
+        correctIndex: 1,
+        explanation:
+          "The warnings say: Do not use if you have ever had an allergic reaction to any pain reliever.",
       },
     ],
   },
@@ -302,12 +377,6 @@ export function getLessonById(id: string): Lesson | undefined {
 
 export const categoryInfo = [
   {
-    id: "phonics",
-    title: "Letters & Sounds",
-    description: "Learn the alphabet, phonics, and how letters make words",
-    icon: "volume-2",
-  },
-  {
     id: "sight-words",
     title: "Words You'll Use",
     description: "Practice common words you see every day",
@@ -324,5 +393,11 @@ export const categoryInfo = [
     title: "Real-World Reading",
     description: "Practice with documents like forms and labels",
     icon: "clipboard-list",
+  },
+  {
+    id: "phonics",
+    title: "Letters & Sounds",
+    description: "Learn the alphabet, phonics, and how letters make words",
+    icon: "volume-2",
   },
 ];

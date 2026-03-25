@@ -1,4 +1,4 @@
-import { BarChart3, BookOpen, Flame, Award, Clock } from "lucide-react";
+import { BookOpen, Flame, Award } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useApp } from "@/contexts/AppContext";
@@ -10,6 +10,17 @@ export default function ProgressScreen() {
 
   const totalCompleted = Object.values(state.progress).filter((p) => p.completed).length;
   const totalLessons = allLessons.length;
+
+  const quizTotals = Object.values(state.progress).reduce(
+    (acc, p) => {
+      if (p.quizTotal != null && p.quizCorrect != null) {
+        acc.correct += p.quizCorrect;
+        acc.total += p.quizTotal;
+      }
+      return acc;
+    },
+    { correct: 0, total: 0 }
+  );
 
   const getEncouragement = () => {
     const pct = totalLessons ? (totalCompleted / totalLessons) * 100 : 0;
@@ -50,6 +61,17 @@ export default function ProgressScreen() {
             </CardContent>
           </Card>
         </div>
+
+        {quizTotals.total > 0 && (
+          <Card className="mb-6 border-accent/20 bg-accent/5">
+            <CardContent className="p-4 text-center">
+              <p className="text-sm text-muted-foreground mb-1">Quiz questions (all lessons)</p>
+              <p className="text-lg font-semibold">
+                {quizTotals.correct} of {quizTotals.total} correct
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Category breakdown */}
         <h2 className="mb-4 text-xl font-bold">By Category</h2>

@@ -73,7 +73,7 @@ export default function Dashboard() {
         {/* Learning path */}
         <h2 className="mb-4 text-xl font-bold">Your Learning Path</h2>
         <div className="space-y-3">
-          {categoryInfo.map((cat, i) => {
+          {categoryInfo.map((cat) => {
             const Icon = iconMap[cat.icon] || BookOpen;
             const progress = getCategoryProgress(cat.id);
             return (

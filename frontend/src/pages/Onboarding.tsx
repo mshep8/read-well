@@ -5,19 +5,33 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useApp } from "@/contexts/AppContext";
 import { LessonCategory } from "@/lib/types";
+import { categoryInfo } from "@/lib/lessonData";
 import { updateUserName, DEFAULT_USER_ID } from "@/lib/api";
 
-const levels = [
-  { id: "phonics" as LessonCategory, label: "Letters & Sounds", desc: "Start with the basics", icon: Volume2 },
-  { id: "sight-words" as LessonCategory, label: "Everyday Words", desc: "Learn words you see often", icon: BookOpen },
-  { id: "sentences" as LessonCategory, label: "Reading Practice", desc: "Read short passages", icon: FileText },
-  { id: "real-world" as LessonCategory, label: "Real-World Documents", desc: "Forms, labels, and more", icon: ClipboardList },
-];
+const onboardingCopy: Record<LessonCategory, { label: string; desc: string }> = {
+  phonics: { label: "Letters & Sounds", desc: "Start with the basics" },
+  "sight-words": { label: "Everyday Words", desc: "Learn words you see often" },
+  sentences: { label: "Reading Practice", desc: "Read short passages" },
+  "real-world": { label: "Real-World Documents", desc: "Forms, labels, and more" },
+};
+
+const iconByCategory: Record<LessonCategory, typeof Volume2> = {
+  phonics: Volume2,
+  "sight-words": BookOpen,
+  sentences: FileText,
+  "real-world": ClipboardList,
+};
+
+const levels = categoryInfo.map((cat) => ({
+  id: cat.id as LessonCategory,
+  ...onboardingCopy[cat.id as LessonCategory],
+  icon: iconByCategory[cat.id as LessonCategory],
+}));
 
 export default function Onboarding() {
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
-  const [selectedLevel, setSelectedLevel] = useState<LessonCategory>("phonics");
+  const [selectedLevel, setSelectedLevel] = useState<LessonCategory>("sight-words");
   const navigate = useNavigate();
   const { setProfile } = useApp();
 
