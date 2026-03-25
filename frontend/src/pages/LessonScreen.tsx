@@ -12,7 +12,6 @@ import {
   speak,
   speakSequence,
   buildPhonicsIntroParts,
-  buildVocabularySpeechParts,
   passageToSpeechParts,
 } from "@/lib/speak";
 import type { Lesson } from "@/lib/types";
@@ -256,24 +255,11 @@ export default function LessonScreen() {
               </CardContent>
             </Card>
 
-            <h2 className="text-lg font-bold mb-2">Key vocabulary</h2>
-            <div className="space-y-2 mb-6">
-              {lesson.vocabulary.map((v) => (
-                <button
-                  key={v.word}
-                  type="button"
-                  className="flex w-full items-start gap-3 rounded-lg border border-border bg-card p-3 text-left min-h-[52px] hover:border-accent/40"
-                  onClick={() => speakSequence(buildVocabularySpeechParts(v.word, v.phonetic, v.definition))}
-                >
-                  <Volume2 className="h-5 w-5 text-accent shrink-0 mt-0.5" aria-hidden />
-                  <div className="min-w-0">
-                    <span className="font-semibold">{v.word}</span>
-                    <span className="text-xs text-muted-foreground ml-2">({v.phonetic})</span>
-                    <p className="text-sm text-muted-foreground">{v.definition}</p>
-                  </div>
-                </button>
-              ))}
-            </div>
+            <h2 className="text-lg font-bold mb-1">Key vocabulary</h2>
+            <p className="mb-3 text-sm text-muted-foreground">
+              Tap a word to open it. Use the speaker to hear the word and its meaning.
+            </p>
+            <RealWorldVocabCards vocabulary={lesson.vocabulary} />
 
             <div className="mb-3 flex items-center justify-between gap-2">
               <h2 className="text-lg font-bold">Check your understanding</h2>
@@ -356,6 +342,49 @@ export default function LessonScreen() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function RealWorldVocabCards({
+  vocabulary,
+}: {
+  vocabulary: { word: string; definition: string; phonetic: string }[];
+}) {
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  return (
+    <div className="space-y-2 mb-6">
+      {vocabulary.map((v) => (
+        <div
+          key={v.word}
+          className={cn(
+            "flex w-full flex-col rounded-lg border-2 border-border text-left transition-colors overflow-hidden",
+            expanded === v.word && "bg-card"
+          )}
+        >
+          <button
+            type="button"
+            onClick={() => setExpanded((cur) => (cur === v.word ? null : v.word))}
+            className="flex w-full items-center gap-3 p-4 text-left min-h-[52px] hover:bg-accent/5 transition-colors"
+          >
+            <span className="text-lg font-bold">{v.word}</span>
+          </button>
+          {expanded === v.word && (
+            <div className="flex gap-3 border-t border-border px-4 py-3">
+              <AudioButton
+                parts={[v.word, v.definition]}
+                label={`Read ${v.word} and its meaning`}
+                className="shrink-0"
+              />
+              <div className="min-w-0 flex-1 pt-0.5">
+                <p className="text-xs text-muted-foreground mb-1">({v.phonetic})</p>
+                <p className="text-muted-foreground">{v.definition}</p>
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }

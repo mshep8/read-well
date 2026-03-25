@@ -324,14 +324,6 @@ export function buildPhonicsIntroParts(letter: string, soundLabel: string): stri
   return [`Letter ${L}.`, "Listen to how this letter sounds in words."];
 }
 
-/**
- * Vocabulary row: word, then respelling (hyphens → slight pauses for TTS), then meaning.
- */
-export function buildVocabularySpeechParts(word: string, phonetic: string, definition: string): string[] {
-  const respelling = phonetic.replace(/-/g, " ");
-  return [word, `Pronounced: ${respelling}.`, definition];
-}
-
 /** Break a long passage into sentences for clearer TTS pauses. */
 export function passageToSpeechParts(passage: string): string[] {
   const chunks = passage
