@@ -121,7 +121,10 @@ export default function LessonScreen() {
           <span>Back</span>
         </button>
 
-        <h1 className="text-xl sm:text-2xl font-bold mb-2">{lesson.title}</h1>
+        <div className="mb-2">
+          <p className="text-sm font-medium text-accent uppercase tracking-wide">{lesson.topic}</p>
+          <h1 className="text-xl sm:text-2xl font-bold">{lesson.title}</h1>
+        </div>
 
         {/* PHONICS */}
         {lesson.category === "phonics" && (
@@ -205,7 +208,7 @@ export default function LessonScreen() {
             <Card className="mb-6">
               <CardContent className="p-5">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-2">
-                  <span className="text-sm font-medium text-accent uppercase">{lesson.topic}</span>
+                  <span className="text-sm text-muted-foreground">Passage</span>
                   <PassageSpeechControls parts={passageToSpeechParts(lesson.passage)} />
                 </div>
                 <p className="text-lg leading-relaxed">{lesson.passage}</p>
@@ -248,7 +251,7 @@ export default function LessonScreen() {
             <Card className="mb-4">
               <CardContent className="p-5">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-2">
-                  <span className="text-sm font-medium text-accent uppercase">{lesson.documentType}</span>
+                  <span className="text-sm text-muted-foreground">{lesson.documentType}</span>
                   <PassageSpeechControls parts={passageToSpeechParts(lesson.content)} />
                 </div>
                 <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans">{lesson.content}</pre>

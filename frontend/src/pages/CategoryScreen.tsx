@@ -56,7 +56,8 @@ export default function CategoryScreen() {
                     }`}>
                       {done ? <Check className="h-5 w-5" /> : i + 1}
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-medium uppercase tracking-wide text-accent">{lesson.topic}</div>
                       <div className="font-semibold">{lesson.title}</div>
                     </div>
                     <ArrowRight className="h-5 w-5 text-muted-foreground" />

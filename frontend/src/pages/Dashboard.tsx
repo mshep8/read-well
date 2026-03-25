@@ -57,6 +57,7 @@ export default function Dashboard() {
           <Card className="mb-8 border-accent/30 bg-accent/5 animate-fade-in">
             <CardContent className="p-5">
               <p className="text-sm font-medium text-accent uppercase tracking-wide">Continue where you left off</p>
+              <p className="mt-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">{next.lesson.topic}</p>
               <h2 className="mt-2 text-xl font-bold">{next.lesson.title}</h2>
               <p className="mt-1 text-muted-foreground">{next.category.description}</p>
               <Button
