@@ -324,13 +324,27 @@ export function buildPhonicsIntroParts(letter: string, soundLabel: string): stri
   return [`Letter ${L}.`, "Listen to how this letter sounds in words."];
 }
 
+/**
+ * Strip characters that TTS reads aloud awkwardly (e.g. blank lines as "underscore",
+ * slashes as "slash") while keeping the wording readable.
+ */
+export function preparePassageTextForSpeech(passage: string): string {
+  return passage
+    .replace(/\s*\/\s*/g, ", ")
+    .replace(/_+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 /** Break a long passage into sentences for clearer TTS pauses. */
 export function passageToSpeechParts(passage: string): string[] {
-  const chunks = passage
+  const normalized = preparePassageTextForSpeech(passage);
+  if (!normalized) return [];
+  const chunks = normalized
     .split(/(?<=[.!?])\s+/)
     .map((s) => s.trim())
     .filter(Boolean);
-  return chunks.length ? chunks : [passage.trim()];
+  return chunks.length ? chunks : [normalized];
 }
 
 /** Prime voice list (call once from app root if needed) */
