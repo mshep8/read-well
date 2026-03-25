@@ -377,12 +377,6 @@ export function getLessonById(id: string): Lesson | undefined {
 
 export const categoryInfo = [
   {
-    id: "phonics",
-    title: "Letters & Sounds",
-    description: "Learn the alphabet, phonics, and how letters make words",
-    icon: "volume-2",
-  },
-  {
     id: "sight-words",
     title: "Words You'll Use",
     description: "Practice common words you see every day",
@@ -399,5 +393,11 @@ export const categoryInfo = [
     title: "Real-World Reading",
     description: "Practice with documents like forms and labels",
     icon: "clipboard-list",
+  },
+  {
+    id: "phonics",
+    title: "Letters & Sounds",
+    description: "Learn the alphabet, phonics, and how letters make words",
+    icon: "volume-2",
   },
 ];
