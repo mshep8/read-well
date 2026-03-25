@@ -1,5 +1,8 @@
 export type LessonCategory = "phonics" | "sight-words" | "sentences" | "real-world";
 
+/** Shared across all lesson types so each category lines up by theme */
+export type ContentTopic = "Documents" | "Shopping" | "Everyday terms" | "Driving" | "Auto/legal";
+
 export interface UserProfile {
   name: string;
   startingLevel: LessonCategory;
@@ -34,6 +37,7 @@ export interface AppState {
 export interface PhonicsLesson {
   id: string;
   category: "phonics";
+  topic: ContentTopic;
   title: string;
   letter: string;
   sound: string;
@@ -51,6 +55,7 @@ export interface PhonicsLesson {
 export interface SightWordLesson {
   id: string;
   category: "sight-words";
+  topic: ContentTopic;
   title: string;
   words: { word: string; definition: string; sentence: string }[];
 }
@@ -60,13 +65,14 @@ export interface SentenceLesson {
   category: "sentences";
   title: string;
   passage: string;
-  topic: string;
+  topic: ContentTopic;
   questions: { question: string; options: string[]; correctIndex: number; explanation: string }[];
 }
 
 export interface RealWorldLesson {
   id: string;
   category: "real-world";
+  topic: ContentTopic;
   title: string;
   documentType: string;
   content: string;
