@@ -1,12 +1,12 @@
-import { useNavigate } from "react-router-dom";
-import { ArrowRight, BookOpen } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useApp } from "@/contexts/AppContext";
 import { AudioButton } from "@/components/AudioButton";
 
 export default function Welcome() {
   const navigate = useNavigate();
-  const { isOnboarded } = useApp();
+  const [searchParams] = useSearchParams();
+  const showAuthMessage = searchParams.get("auth") === "required";
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4 sm:px-6 md:px-8">
@@ -19,6 +19,9 @@ export default function Welcome() {
         <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
           Your reading journey starts here
         </p>
+        {showAuthMessage && (
+          <p className="mt-3 text-sm font-medium text-destructive">Please login or sign up</p>
+        )}
 
         {/* Audio */}
         <AudioButton
@@ -31,30 +34,24 @@ export default function Welcome() {
         {/* Actions */}
         <div className="mt-10 flex w-full flex-col gap-3">
           <Button
+            variant="secondary"
             size="lg"
             className="w-full text-lg min-h-[56px] gap-2"
-            onClick={() => navigate("/onboarding")}
+            onClick={() => navigate("/register")}
           >
-            <ArrowRight className="h-5 w-5" />
-            Get Started
+            Sign Up
           </Button>
 
-          {isOnboarded && (
-            <Button
-              variant="secondary"
-              size="lg"
-              className="w-full text-lg min-h-[56px] gap-2"
-              onClick={() => navigate("/dashboard")}
-            >
-              <BookOpen className="h-5 w-5" />
-              Continue Learning
-            </Button>
-          )}
+          <Button
+            variant="secondary"
+            size="lg"
+            className="w-full text-lg min-h-[56px]"
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </Button>
         </div>
 
-        <p className="mt-8 text-sm text-muted-foreground">
-          Your progress stays private on this device.
-        </p>
       </div>
     </div>
   );

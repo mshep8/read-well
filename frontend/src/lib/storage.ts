@@ -14,7 +14,16 @@ export function loadState(): AppState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultState;
-    return { ...defaultState, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    if (
+      parsed?.profile &&
+      typeof parsed.profile.name === "string" &&
+      typeof parsed.profile.username !== "string"
+    ) {
+      parsed.profile.username = parsed.profile.name;
+      delete parsed.profile.name;
+    }
+    return { ...defaultState, ...parsed };
   } catch {
     return defaultState;
   }

@@ -54,14 +54,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.style.fontSize = sizes[state.textSize];
   }, [state.textSize]);
 
-  // Sync display name from backend on load (for persistence across refresh)
+  // Sync username from backend on load (for persistence across refresh)
   useEffect(() => {
     getUser(DEFAULT_USER_ID)
       .then((user) => {
-        if (!user.Name) return;
+        if (!user.Username) return;
         setState((prev) => {
-          if (prev.profile && prev.profile.name !== user.Name) {
-            return saveProfile({ ...prev.profile, name: user.Name });
+          if (prev.profile && prev.profile.username !== user.Username) {
+            return saveProfile({ ...prev.profile, username: user.Username });
           }
           return prev;
         });

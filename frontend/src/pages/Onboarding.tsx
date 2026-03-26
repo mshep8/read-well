@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useApp } from "@/contexts/AppContext";
 import { LessonCategory } from "@/lib/types";
 import { categoryInfo } from "@/lib/lessonData";
-import { updateUserName, DEFAULT_USER_ID } from "@/lib/api";
+import { updateUsername, DEFAULT_USER_ID } from "@/lib/api";
 
 const onboardingCopy: Record<LessonCategory, { label: string; desc: string }> = {
   phonics: { label: "Letters & Sounds", desc: "Start with the basics" },
@@ -31,21 +31,21 @@ const levels = categoryInfo.map((cat) => ({
 export default function Onboarding() {
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
-  const [selectedLevel, setSelectedLevel] = useState<LessonCategory>("sight-words");
+  const [selectedLevel, setSelectedLevel] = useState<LessonCategory>("phonics");
   const navigate = useNavigate();
   const { setProfile } = useApp();
 
   const handleFinish = async () => {
-    const displayName = name.trim() || "Learner";
+    const normalizedUsername = username.trim() || "learner";
     setProfile({
-      name: displayName,
+      username: normalizedUsername,
       startingLevel: selectedLevel,
       createdAt: new Date().toISOString(),
     });
     try {
-      await updateUserName(DEFAULT_USER_ID, displayName);
+      await updateUsername(DEFAULT_USER_ID, normalizedUsername);
     } catch {
-      // Continue even if backend fails; localStorage still has the name
+      // Continue even if backend fails; localStorage still has the username.
     }
     navigate("/dashboard");
   };
@@ -68,13 +68,13 @@ export default function Onboarding() {
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
               <User className="h-8 w-8 text-accent" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold">What should we call you?</h2>
-            <p className="mt-2 text-muted-foreground">First name is fine — this is just for you.</p>
+            <h2 className="text-xl sm:text-2xl font-bold">Pick a username</h2>
+            <p className="mt-2 text-muted-foreground">This is how your account is identified.</p>
 
             <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Your first name"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Username"
               className="mt-6 text-lg text-center min-h-[56px]"
               autoFocus
             />
@@ -93,7 +93,7 @@ export default function Onboarding() {
         {step === 1 && (
           <div className="flex flex-col items-center text-center">
             <h2 className="text-xl sm:text-2xl font-bold">Where would you like to start?</h2>
-            <p className="mt-2 text-muted-foreground">You can change this anytime. There's no wrong answer.</p>
+            <p className="mt-2 text-muted-foreground">You can change this anytime. There is no wrong answer.</p>
 
             <div className="mt-6 flex w-full flex-col gap-3">
               {levels.map(({ id, label, desc, icon: Icon }) => (
