@@ -7,6 +7,12 @@ import type {
   RealWorldLesson,
 } from "./types";
 
+/**
+ * Sync rule:
+ * When you add/change lessons in this file, update db/lear2read_data.sql so
+ * the shared database lesson inventory stays aligned for teammates and AI.
+ */
+
 /** Same five themes in every category, in this order */
 export const STANDARD_TOPICS: ContentTopic[] = [
   "Documents",

@@ -34,6 +34,7 @@ export default function Register() {
     try {
       const user = await registerUser(trimmedUsername, password);
       setProfile({
+        userId: user.UserID,
         username: user.Username,
         startingLevel: "phonics",
         createdAt: new Date().toISOString(),
@@ -41,7 +42,7 @@ export default function Register() {
       setIsSuccess(true);
       setUsername("");
       setPassword("");
-      setTimeout(() => navigate("/onboarding"), 700);
+      setTimeout(() => navigate("/dashboard"), 700);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
     } finally {

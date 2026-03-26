@@ -4,6 +4,7 @@ export type LessonCategory = "phonics" | "sight-words" | "sentences" | "real-wor
 export type ContentTopic = "Documents" | "Shopping" | "Everyday terms" | "Driving" | "Auto/legal";
 
 export interface UserProfile {
+  userId?: number;
   username: string;
   startingLevel: LessonCategory;
   createdAt: string;

@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useApp } from "@/contexts/AppContext";
 import { BottomNav } from "@/components/BottomNav";
 import { cn } from "@/lib/utils";
-import { getUser, updateUsername, DEFAULT_USER_ID } from "@/lib/api";
+import { getUser, updateUsername } from "@/lib/api";
 
 export default function SettingsScreen() {
   const { state, setProfile, changeTextSize, resetAllProgress } = useApp();
@@ -17,17 +17,27 @@ export default function SettingsScreen() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getUser(DEFAULT_USER_ID)
+    const userId = state.profile?.userId;
+    if (!userId) {
+      setUsername(state.profile?.username || "");
+      setLoading(false);
+      return;
+    }
+
+    getUser(userId)
       .then((user) => setUsername(user.Username || ""))
       .catch(() => setUsername(state.profile?.username || ""))
       .finally(() => setLoading(false));
-  }, [state.profile?.username]);
+  }, [state.profile?.userId, state.profile?.username]);
 
   const handleSaveUsername = async () => {
     const newUsername = username.trim() || "learner";
     setError(null);
     try {
-      await updateUsername(DEFAULT_USER_ID, newUsername);
+      const userId = state.profile?.userId;
+      if (userId) {
+        await updateUsername(userId, newUsername);
+      }
       if (state.profile) {
         setProfile({ ...state.profile, username: newUsername });
       }

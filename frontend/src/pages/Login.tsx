@@ -32,6 +32,7 @@ export default function Login() {
     try {
       const user = await loginUser(trimmedUsername, password);
       setProfile({
+        userId: user.UserID,
         username: user.Username,
         startingLevel: state.profile?.startingLevel ?? "phonics",
         createdAt: state.profile?.createdAt ?? new Date().toISOString(),
