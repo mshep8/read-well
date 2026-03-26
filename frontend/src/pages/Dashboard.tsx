@@ -57,6 +57,7 @@ export default function Dashboard() {
           <Card className="mb-8 border-accent/30 bg-accent/5 animate-fade-in">
             <CardContent className="p-5">
               <p className="text-sm font-medium text-accent uppercase tracking-wide">Continue where you left off</p>
+              <p className="mt-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">{next.lesson.topic}</p>
               <h2 className="mt-2 text-xl font-bold">{next.lesson.title}</h2>
               <p className="mt-1 text-muted-foreground">{next.category.description}</p>
               <Button
@@ -73,7 +74,7 @@ export default function Dashboard() {
         {/* Learning path */}
         <h2 className="mb-4 text-xl font-bold">Your Learning Path</h2>
         <div className="space-y-3">
-          {categoryInfo.map((cat, i) => {
+          {categoryInfo.map((cat) => {
             const Icon = iconMap[cat.icon] || BookOpen;
             const progress = getCategoryProgress(cat.id);
             return (
