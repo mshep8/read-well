@@ -173,4 +173,4 @@ The vertical slice is **editing the display name in Settings** and having it per
 
 5. **Verify persistence after refresh**: Refresh the page (F5 or Cmd+R). The display name should still show your updated value (loaded from the database and synced to the app).
 
-6. **Verify it appears across the app**: Navigate to the Dashboard or other screens. The display name should be reflected wherever the profile name is used.
+6. **Verify it appears across the app**: Navigate to the Dashboard or other screens. The display name should be reflected wherever the profile name is used. 
