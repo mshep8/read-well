@@ -6,30 +6,40 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useApp } from "@/contexts/AppContext";
 import { BottomNav } from "@/components/BottomNav";
 import { cn } from "@/lib/utils";
-import { getUser, updateUserName, DEFAULT_USER_ID } from "@/lib/api";
+import { getUser, updateUsername } from "@/lib/api";
 
 export default function SettingsScreen() {
   const { state, setProfile, changeTextSize, resetAllProgress } = useApp();
-  const [name, setName] = useState(state.profile?.name || "");
+  const [username, setUsername] = useState(state.profile?.username || "");
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getUser(DEFAULT_USER_ID)
-      .then((user) => setName(user.Name || ""))
-      .catch(() => setName(state.profile?.name || ""))
-      .finally(() => setLoading(false));
-  }, [state.profile?.name]);
+    const userId = state.profile?.userId;
+    if (!userId) {
+      setUsername(state.profile?.username || "");
+      setLoading(false);
+      return;
+    }
 
-  const handleSaveName = async () => {
-    const newName = name.trim() || "Learner";
+    getUser(userId)
+      .then((user) => setUsername(user.Username || ""))
+      .catch(() => setUsername(state.profile?.username || ""))
+      .finally(() => setLoading(false));
+  }, [state.profile?.userId, state.profile?.username]);
+
+  const handleSaveUsername = async () => {
+    const newUsername = username.trim() || "learner";
     setError(null);
     try {
-      await updateUserName(DEFAULT_USER_ID, newName);
+      const userId = state.profile?.userId;
+      if (userId) {
+        await updateUsername(userId, newUsername);
+      }
       if (state.profile) {
-        setProfile({ ...state.profile, name: newName });
+        setProfile({ ...state.profile, username: newUsername });
       }
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
@@ -49,23 +59,23 @@ export default function SettingsScreen() {
       <div className="mx-auto w-full max-w-md md:max-w-2xl px-4 sm:px-5 md:px-6 lg:px-8 pt-6 sm:pt-8">
         <h1 className="mb-6 text-2xl sm:text-3xl font-bold">Settings</h1>
 
-        {/* Name */}
+        {/* Username */}
         <Card className="mb-4">
           <CardContent className="p-5">
             <div className="flex items-center gap-3 mb-3">
               <User className="h-5 w-5 text-accent" />
-              <h2 className="font-bold text-lg">Display Name</h2>
+              <h2 className="font-bold text-lg">Username</h2>
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex flex-col sm:flex-row gap-2">
                 <Input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="text-lg min-h-[48px] flex-1 min-w-0"
                   disabled={loading}
-                  placeholder={loading ? "Loading..." : "Your name"}
+                  placeholder={loading ? "Loading..." : "Your username"}
                 />
-                <Button onClick={handleSaveName} className="min-h-[48px] sm:shrink-0" disabled={loading}>
+                <Button onClick={handleSaveUsername} className="min-h-[48px] sm:shrink-0" disabled={loading}>
                   {saved ? "Saved!" : "Save"}
                 </Button>
               </div>

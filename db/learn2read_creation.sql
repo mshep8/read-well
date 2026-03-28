@@ -1,3 +1,8 @@
+-- NOTE FOR TEAMMATES / AI:
+-- This file defines schema only. Lesson content seeds live in
+-- db/lear2read_data.sql and must be updated whenever frontend lessonData.ts
+-- adds or changes lessons.
+
 -- 1. QuestionTypes Table
 CREATE TABLE QuestionTypes (
     QuestionTypeID SERIAL PRIMARY KEY, -- [cite: 1, 2]
@@ -8,7 +13,7 @@ CREATE TABLE QuestionTypes (
 -- 2. User ID Table
 CREATE TABLE Users (
     UserID SERIAL PRIMARY KEY,         -- [cite: 3, 6]
-    Name VARCHAR(255),                 -- [cite: 6]
+    Name VARCHAR(255) UNIQUE,          -- [cite: 6]
     Email VARCHAR(255),                -- [cite: 7, 8]
     Password VARCHAR(255)              -- [cite: 6]
 );
