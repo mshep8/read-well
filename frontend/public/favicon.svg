@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true">
+  <rect width="32" height="32" rx="6" fill="hsl(36 33% 95%)"/>
+  <!-- Open book: left and right pages + spine (matches app accent / BookOpen feel) -->
+  <path
+    fill="hsl(174 35% 38%)"
+    d="M8 8a1.5 1.5 0 0 1 1.5-1.5H15v17h-5A2.5 2.5 0 0 0 8 25.5V8Z"
+  />
+  <path
+    fill="hsl(174 35% 38%)"
+    d="M24 8a1.5 1.5 0 0 0-1.5-1.5H17v17h5A2.5 2.5 0 0 1 24 25.5V8Z"
+  />
+  <path stroke="hsl(220 35% 25%)" stroke-width="1.25" stroke-linecap="round" d="M16 6.5v18" />
+</svg>

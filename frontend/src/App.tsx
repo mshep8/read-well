@@ -14,6 +14,7 @@ import CategoryScreen from "./pages/CategoryScreen";
 import LessonScreen from "./pages/LessonScreen";
 import ProgressScreen from "./pages/ProgressScreen";
 import SettingsScreen from "./pages/SettingsScreen";
+import DictionaryScreen from "./pages/DictionaryScreen";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/lesson/:lessonId" element={<ProtectedRoute><LessonScreen /></ProtectedRoute>} />
             <Route path="/progress" element={<ProtectedRoute><ProgressScreen /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><SettingsScreen /></ProtectedRoute>} />
+            <Route path="/dictionary" element={<ProtectedRoute><DictionaryScreen /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
