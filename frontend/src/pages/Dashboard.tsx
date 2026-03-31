@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { useApp } from "@/contexts/AppContext";
 import { BottomNav } from "@/components/BottomNav";
 import { categoryInfo, getLessonsByCategory } from "@/lib/lessonData";
+import { getCurrentLevel, isCategoryUnlocked } from "@/lib/progression";
 
 const iconMap: Record<string, React.ElementType> = {
   "volume-2": Volume2,
@@ -18,10 +19,13 @@ export default function Dashboard() {
   const { state } = useApp();
   const navigate = useNavigate();
   const username = state.profile?.username || "learner";
+  const totalCompleted = Object.values(state.progress).filter((p) => p.completed).length;
+  const currentLevel = getCurrentLevel(totalCompleted);
 
   // Find next incomplete lesson
   const getNextLesson = () => {
     for (const cat of categoryInfo) {
+      if (!isCategoryUnlocked(cat.id, totalCompleted)) continue;
       const lessons = getLessonsByCategory(cat.id);
       const next = lessons.find((l) => !state.progress[l.id]?.completed);
       if (next) return { lesson: next, category: cat };
@@ -44,6 +48,7 @@ export default function Dashboard() {
         {/* Greeting */}
         <div className="mb-6 animate-fade-in">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">Welcome back, {username}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Level {currentLevel.level}: {currentLevel.title}</p>
           {state.streak > 0 && (
             <div className="mt-2 flex items-center gap-2 text-warm">
               <Flame className="h-5 w-5" />

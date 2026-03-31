@@ -11,6 +11,7 @@ import {
   type PracticeContext,
 } from "@/lib/lessonData";
 import { Check } from "lucide-react";
+import { getCurrentLevel, getRequiredLevelForCategory, isCategoryUnlocked } from "@/lib/progression";
 
 const iconMap: Record<string, React.ElementType> = {
   "volume-2": Volume2,
@@ -31,6 +32,10 @@ export default function CategoryScreen() {
 
   const cat = categoryInfo.find((c) => c.id === categoryId);
   const lessons = getLessonsByCategoryAndContext(categoryId || "", selectedContext);
+  const totalCompleted = Object.values(state.progress).filter((p) => p.completed).length;
+  const currentLevel = getCurrentLevel(totalCompleted);
+  const requiredLevel = getRequiredLevelForCategory(categoryId || "");
+  const unlocked = isCategoryUnlocked(categoryId || "", totalCompleted);
 
   if (!cat) return <div className="p-8 text-center">Category not found</div>;
 
@@ -50,6 +55,17 @@ export default function CategoryScreen() {
           </div>
         </div>
 
+        {!unlocked && (
+          <Card className="mb-4 border-warm/30 bg-warm/5">
+            <CardContent className="p-4 text-sm">
+              <p className="font-semibold mb-1">This category is locked.</p>
+              <p className="text-muted-foreground">
+                Reach Level {requiredLevel} to unlock it. You are currently Level {currentLevel.level}.
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Lesson list */}
         <div className="space-y-3">
           {lessons.map((lesson, i) => {
@@ -58,8 +74,11 @@ export default function CategoryScreen() {
               <Card key={lesson.id} className={done ? "border-success/30 bg-success/5" : ""}>
                 <CardContent className="p-0">
                   <button
+                    disabled={!unlocked}
                     onClick={() => navigate(`/lesson/${lesson.id}?context=${encodeURIComponent(selectedContext)}`)}
-                    className="flex w-full items-center gap-4 p-4 text-left min-h-[64px]"
+                    className={`flex w-full items-center gap-4 p-4 text-left min-h-[64px] ${
+                      unlocked ? "" : "cursor-not-allowed opacity-60"
+                    }`}
                   >
                     <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
                       done ? "bg-success text-success-foreground" : "bg-muted text-muted-foreground"
