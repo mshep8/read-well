@@ -167,7 +167,7 @@ app.patch("/api/users/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
+ 
 // Lessons: frontend lesson map to DB lesson ids
 app.get("/api/lessons", async (_req, res) => {
   try {
