@@ -1,10 +1,15 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { BookOpen, Volume2, FileText, ClipboardList, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/contexts/AppContext";
 import { BottomNav } from "@/components/BottomNav";
-import { categoryInfo, getLessonsByCategory } from "@/lib/lessonData";
+import {
+  categoryInfo,
+  getLessonsByCategoryAndContext,
+  PRACTICE_CONTEXTS,
+  type PracticeContext,
+} from "@/lib/lessonData";
 import { Check } from "lucide-react";
 
 const iconMap: Record<string, React.ElementType> = {
@@ -18,9 +23,14 @@ export default function CategoryScreen() {
   const { categoryId } = useParams<{ categoryId: string }>();
   const { state } = useApp();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const contextParam = searchParams.get("context");
+  const selectedContext = (PRACTICE_CONTEXTS.includes(contextParam as PracticeContext)
+    ? contextParam
+    : PRACTICE_CONTEXTS[0]) as PracticeContext;
 
   const cat = categoryInfo.find((c) => c.id === categoryId);
-  const lessons = getLessonsByCategory(categoryId || "");
+  const lessons = getLessonsByCategoryAndContext(categoryId || "", selectedContext);
 
   if (!cat) return <div className="p-8 text-center">Category not found</div>;
 
@@ -48,7 +58,7 @@ export default function CategoryScreen() {
               <Card key={lesson.id} className={done ? "border-success/30 bg-success/5" : ""}>
                 <CardContent className="p-0">
                   <button
-                    onClick={() => navigate(`/lesson/${lesson.id}`)}
+                    onClick={() => navigate(`/lesson/${lesson.id}?context=${encodeURIComponent(selectedContext)}`)}
                     className="flex w-full items-center gap-4 p-4 text-left min-h-[64px]"
                   >
                     <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
@@ -67,6 +77,13 @@ export default function CategoryScreen() {
             );
           })}
         </div>
+        {lessons.length === 0 && (
+          <Card className="mt-3">
+            <CardContent className="p-4 text-sm text-muted-foreground">
+              No {cat.title.toLowerCase()} lessons are available yet for {selectedContext}.
+            </CardContent>
+          </Card>
+        )}
 
         <Button variant="secondary" className="mt-6 w-full min-h-[48px]" onClick={() => navigate("/lessons")}>
           Back to Lessons

@@ -22,6 +22,40 @@ export const STANDARD_TOPICS: ContentTopic[] = [
   "Auto/legal",
 ];
 
+export const PRACTICE_CONTEXTS = [
+  "Everyday Terms",
+  "Employment",
+  "Finance",
+  "Legal",
+  "Medical",
+  "Housing",
+  "Shopping",
+  "Auto",
+  "Technology",
+  "Social Life",
+  "Dining",
+  "Emergencies",
+  "Community",
+] as const;
+
+export type PracticeContext = (typeof PRACTICE_CONTEXTS)[number];
+
+const LEGACY_TOPIC_ALIASES_BY_CONTEXT: Record<PracticeContext, string[]> = {
+  "Everyday Terms": ["Everyday terms", "Everyday Terms"],
+  Employment: ["Documents", "Employment"],
+  Finance: ["Finance"],
+  Legal: ["Auto/legal", "Legal"],
+  Medical: ["Medical"],
+  Housing: ["Housing"],
+  Shopping: ["Shopping"],
+  Auto: ["Driving", "Auto"],
+  Technology: ["Technology"],
+  "Social Life": ["Social Life"],
+  Dining: ["Dining"],
+  Emergencies: ["Emergencies"],
+  Community: ["Community"],
+};
+
 export const phonicsLessons: PhonicsLesson[] = [
   {
     id: "phonics-1",
@@ -133,6 +167,174 @@ export const phonicsLessons: PhonicsLesson[] = [
         "Thick begins with the TH sound (like in think). Free and tree start with other sounds, and trick starts with TR.",
     },
   },
+  {
+    id: "phonics-6",
+    category: "phonics",
+    topic: "Finance",
+    title: "The CH Sound",
+    letter: "CH",
+    sound: "/tʃ/ as in 'check'",
+    exampleWords: [
+      { word: "check", phonetic: "ch-e-ck" },
+      { word: "chart", phonetic: "ch-ar-t" },
+      { word: "charge", phonetic: "ch-ar-j" },
+      { word: "cheap", phonetic: "ch-ee-p" },
+    ],
+    exercise: {
+      prompt: "You are paying a bill. Which word starts with the CH sound?",
+      targetSound: "ch",
+      options: ["check", "bank", "card", "loan"],
+      correctIndex: 0,
+      explanation: "Check starts with CH. The other words begin with different sounds.",
+    },
+  },
+  {
+    id: "phonics-7",
+    category: "phonics",
+    topic: "Medical",
+    title: "The CL Blend",
+    letter: "CL",
+    sound: "/kl/ as in 'clinic'",
+    exampleWords: [
+      { word: "clinic", phonetic: "cl-i-n-ic" },
+      { word: "clean", phonetic: "cl-ee-n" },
+      { word: "close", phonetic: "cl-oh-s" },
+      { word: "clock", phonetic: "cl-o-ck" },
+    ],
+    exercise: {
+      prompt: "At the doctor's office, which word begins with the CL blend?",
+      targetSound: "cl",
+      options: ["clinic", "doctor", "nurse", "pain"],
+      correctIndex: 0,
+      explanation: "Clinic begins with the CL blend. The others do not.",
+    },
+  },
+  {
+    id: "phonics-8",
+    category: "phonics",
+    topic: "Housing",
+    title: "The PL Blend",
+    letter: "PL",
+    sound: "/pl/ as in 'place'",
+    exampleWords: [
+      { word: "place", phonetic: "pl-a-ce" },
+      { word: "plan", phonetic: "pl-a-n" },
+      { word: "plug", phonetic: "pl-u-g" },
+      { word: "plate", phonetic: "pl-ay-t" },
+    ],
+    exercise: {
+      prompt: "Which housing word starts with the PL blend?",
+      targetSound: "pl",
+      options: ["place", "rent", "home", "key"],
+      correctIndex: 0,
+      explanation: "Place begins with PL. The other options start with different sounds.",
+    },
+  },
+  {
+    id: "phonics-9",
+    category: "phonics",
+    topic: "Technology",
+    title: "The TR Blend",
+    letter: "TR",
+    sound: "/tr/ as in 'track'",
+    exampleWords: [
+      { word: "track", phonetic: "tr-a-ck" },
+      { word: "try", phonetic: "tr-y" },
+      { word: "trash", phonetic: "tr-a-sh" },
+      { word: "trend", phonetic: "tr-e-nd" },
+    ],
+    exercise: {
+      prompt: "When using an app, which word starts with TR?",
+      targetSound: "tr",
+      options: ["track", "click", "login", "screen"],
+      correctIndex: 0,
+      explanation: "Track begins with TR. The other words begin with other sounds.",
+    },
+  },
+  {
+    id: "phonics-10",
+    category: "phonics",
+    topic: "Social Life",
+    title: "The FR Blend",
+    letter: "FR",
+    sound: "/fr/ as in 'friend'",
+    exampleWords: [
+      { word: "friend", phonetic: "fr-i-end" },
+      { word: "free", phonetic: "fr-ee" },
+      { word: "fresh", phonetic: "fr-e-sh" },
+      { word: "frame", phonetic: "fr-ay-m" },
+    ],
+    exercise: {
+      prompt: "Which social word starts with FR?",
+      targetSound: "fr",
+      options: ["friend", "group", "talk", "event"],
+      correctIndex: 0,
+      explanation: "Friend starts with FR. Group, talk, and event do not.",
+    },
+  },
+  {
+    id: "phonics-11",
+    category: "phonics",
+    topic: "Dining",
+    title: "The SP Blend",
+    letter: "SP",
+    sound: "/sp/ as in 'spoon'",
+    exampleWords: [
+      { word: "spoon", phonetic: "sp-oo-n" },
+      { word: "spice", phonetic: "sp-ice" },
+      { word: "space", phonetic: "sp-ay-ce" },
+      { word: "spill", phonetic: "sp-i-ll" },
+    ],
+    exercise: {
+      prompt: "At a restaurant, which word starts with SP?",
+      targetSound: "sp",
+      options: ["spoon", "plate", "drink", "fork"],
+      correctIndex: 0,
+      explanation: "Spoon begins with SP. The others begin with different sounds.",
+    },
+  },
+  {
+    id: "phonics-12",
+    category: "phonics",
+    topic: "Emergencies",
+    title: "The ST Blend",
+    letter: "ST",
+    sound: "/st/ as in 'stop'",
+    exampleWords: [
+      { word: "stop", phonetic: "st-o-p" },
+      { word: "stay", phonetic: "st-ay" },
+      { word: "step", phonetic: "st-e-p" },
+      { word: "state", phonetic: "st-ay-t" },
+    ],
+    exercise: {
+      prompt: "In an emergency, which word starts with ST?",
+      targetSound: "st",
+      options: ["stop", "call", "help", "run"],
+      correctIndex: 0,
+      explanation: "Stop begins with ST and is a common emergency instruction.",
+    },
+  },
+  {
+    id: "phonics-13",
+    category: "phonics",
+    topic: "Community",
+    title: "The BR Blend",
+    letter: "BR",
+    sound: "/br/ as in 'bridge'",
+    exampleWords: [
+      { word: "bridge", phonetic: "br-i-dge" },
+      { word: "bring", phonetic: "br-i-ng" },
+      { word: "broad", phonetic: "br-aw-d" },
+      { word: "bright", phonetic: "br-igh-t" },
+    ],
+    exercise: {
+      prompt: "Which community word starts with BR?",
+      targetSound: "br",
+      options: ["bridge", "park", "street", "school"],
+      correctIndex: 0,
+      explanation: "Bridge starts with BR. The other options start with different sounds.",
+    },
+  },
 ];
 
 export const sightWordLessons: SightWordLesson[] = [
@@ -224,6 +426,110 @@ export const sightWordLessons: SightWordLesson[] = [
       { word: "deductible", definition: "Money you pay before insurance pays the rest", sentence: "My deductible is $500 after an accident." },
       { word: "premium", definition: "The amount you pay for insurance each month", sentence: "Compare premiums before you choose a plan." },
       { word: "attorney", definition: "A person trained to help you with the law", sentence: "Talk to an attorney if you get a court notice." },
+    ],
+  },
+  {
+    id: "sight-6",
+    category: "sight-words",
+    topic: "Finance",
+    title: "Money and banking",
+    words: [
+      { word: "balance", definition: "How much money is in your account", sentence: "Check your balance before paying the bill." },
+      { word: "deposit", definition: "Money put into your account", sentence: "I made a cash deposit at the bank." },
+      { word: "withdraw", definition: "To take money out of your account", sentence: "You can withdraw money at the ATM." },
+      { word: "interest", definition: "Extra money paid on savings or charged on loans", sentence: "This savings account earns interest each month." },
+      { word: "budget", definition: "A plan for how to spend your money", sentence: "We made a budget for groceries and rent." },
+    ],
+  },
+  {
+    id: "sight-7",
+    category: "sight-words",
+    topic: "Medical",
+    title: "Health care words",
+    words: [
+      { word: "symptom", definition: "A sign that you are sick", sentence: "A fever can be a symptom of illness." },
+      { word: "prescription", definition: "Doctor's order for medicine", sentence: "Pick up your prescription at the pharmacy." },
+      { word: "dosage", definition: "How much medicine to take", sentence: "Read the dosage on the bottle carefully." },
+      { word: "appointment", definition: "A planned visit with a doctor", sentence: "My appointment is at 2 PM tomorrow." },
+      { word: "allergy", definition: "A reaction to food, medicine, or other things", sentence: "Tell the nurse about your allergy." },
+    ],
+  },
+  {
+    id: "sight-8",
+    category: "sight-words",
+    topic: "Housing",
+    title: "Home and rent",
+    words: [
+      { word: "lease", definition: "A contract to rent a home", sentence: "Read the lease before you sign it." },
+      { word: "tenant", definition: "A person who rents a home", sentence: "The tenant paid rent on Friday." },
+      { word: "landlord", definition: "The person who owns the rental home", sentence: "Call the landlord about the broken heater." },
+      { word: "utility", definition: "Services like water, gas, and electricity", sentence: "Utilities are due at the end of the month." },
+      { word: "maintenance", definition: "Repairs and care for a building", sentence: "Submit a maintenance request for the sink leak." },
+    ],
+  },
+  {
+    id: "sight-9",
+    category: "sight-words",
+    topic: "Technology",
+    title: "Phone and computer basics",
+    words: [
+      { word: "password", definition: "Secret word you use to sign in", sentence: "Do not share your password with anyone." },
+      { word: "update", definition: "A newer version of software", sentence: "Install the update before using the app." },
+      { word: "download", definition: "To copy a file from the internet", sentence: "Download the form to your phone." },
+      { word: "username", definition: "Name you use to sign into an account", sentence: "Enter your username and password." },
+      { word: "notification", definition: "A message alert from an app", sentence: "I received a notification from my bank app." },
+    ],
+  },
+  {
+    id: "sight-10",
+    category: "sight-words",
+    topic: "Social Life",
+    title: "People and plans",
+    words: [
+      { word: "invite", definition: "To ask someone to join you", sentence: "I will invite my neighbor to dinner." },
+      { word: "conversation", definition: "Talking with another person", sentence: "We had a good conversation after class." },
+      { word: "support", definition: "Help from other people", sentence: "Family support can make hard times easier." },
+      { word: "respect", definition: "Treating others in a kind and fair way", sentence: "Show respect when people are speaking." },
+      { word: "volunteer", definition: "To help without being paid", sentence: "She will volunteer at the community center." },
+    ],
+  },
+  {
+    id: "sight-11",
+    category: "sight-words",
+    topic: "Dining",
+    title: "Food and restaurants",
+    words: [
+      { word: "menu", definition: "A list of food and drinks", sentence: "Please look at the menu before ordering." },
+      { word: "ingredient", definition: "One item used to make food", sentence: "Salt is one ingredient in the soup." },
+      { word: "allergen", definition: "A food that can cause a bad reaction", sentence: "Tell the server about your allergen." },
+      { word: "portion", definition: "The amount of food served", sentence: "The portion was large enough to share." },
+      { word: "receipt", definition: "Paper showing what you paid", sentence: "Ask for a receipt after you pay." },
+    ],
+  },
+  {
+    id: "sight-12",
+    category: "sight-words",
+    topic: "Emergencies",
+    title: "Urgent situations",
+    words: [
+      { word: "urgent", definition: "Needs quick action", sentence: "This is urgent, so call now." },
+      { word: "evacuate", definition: "To leave a place for safety", sentence: "Evacuate the building when the alarm sounds." },
+      { word: "shelter", definition: "A safe place to stay", sentence: "Go to the shelter during the storm." },
+      { word: "operator", definition: "Person who answers emergency calls", sentence: "The operator asked for my address." },
+      { word: "injury", definition: "Physical harm to the body", sentence: "Tell the nurse about your injury." },
+    ],
+  },
+  {
+    id: "sight-13",
+    category: "sight-words",
+    topic: "Community",
+    title: "Local services",
+    words: [
+      { word: "library", definition: "A place where you can borrow books", sentence: "The library is open until 8 PM." },
+      { word: "transit", definition: "Public transportation like buses and trains", sentence: "Transit can help you get to work." },
+      { word: "resource", definition: "A service or tool that helps people", sentence: "The center is a resource for job help." },
+      { word: "permit", definition: "Official permission to do something", sentence: "You need a permit for that event." },
+      { word: "meeting", definition: "A planned gathering to discuss something", sentence: "There is a neighborhood meeting tonight." },
     ],
   },
 ];
@@ -376,6 +682,182 @@ export const sentenceLessons: SentenceLesson[] = [
         correctIndex: 1,
         explanation:
           "The passage says if you finance a car, the lender may require full coverage.",
+      },
+    ],
+  },
+  {
+    id: "sentence-6",
+    category: "sentences",
+    title: "Using a monthly budget",
+    topic: "Finance",
+    passage:
+      "A budget helps you plan your money before you spend it. First, write your income for the month. Next, list your bills like rent, phone, and groceries. Put some money aside for savings, even if it is a small amount. Track your spending each week to see if you are staying on plan. If one cost is too high, lower spending in another area.",
+    questions: [
+      {
+        question: "What should you do first when making a budget?",
+        options: ["Buy new items", "Write your monthly income", "Ignore your bills", "Spend cash quickly"],
+        correctIndex: 1,
+        explanation: "The passage says to start by writing your income for the month.",
+      },
+      {
+        question: "What does the passage suggest if one cost is too high?",
+        options: ["Stop budgeting", "Lower spending in another area", "Borrow money immediately", "Skip all bills"],
+        correctIndex: 1,
+        explanation: "It says to lower spending somewhere else if one category is too high.",
+      },
+    ],
+  },
+  {
+    id: "sentence-7",
+    category: "sentences",
+    title: "Getting ready for a clinic visit",
+    topic: "Medical",
+    passage:
+      "Before a clinic appointment, bring your ID, insurance card, and a list of medicines you take. Write down your symptoms and when they started. If you have questions, bring a small notebook so you can write the answers. Arrive 15 minutes early to complete forms. If you need language help, ask for an interpreter before your visit.",
+    questions: [
+      {
+        question: "What should you bring to help describe your health problem?",
+        options: ["A list of symptoms and when they started", "Only a snack", "Old receipts", "Nothing"],
+        correctIndex: 0,
+        explanation: "The passage says to write down symptoms and when they started.",
+      },
+      {
+        question: "Why should you arrive early?",
+        options: ["To pay extra", "To complete forms", "To skip the appointment", "To leave sooner"],
+        correctIndex: 1,
+        explanation: "It says to arrive 15 minutes early to complete forms.",
+      },
+    ],
+  },
+  {
+    id: "sentence-8",
+    category: "sentences",
+    title: "Talking with your landlord",
+    topic: "Housing",
+    passage:
+      "If something breaks in your apartment, report it quickly. Write a short message that explains the problem and the date it started. Keep a copy of your message for your records. If the issue affects safety, such as no heat in winter, say that clearly. Good communication helps repairs happen faster.",
+    questions: [
+      {
+        question: "What should you include in your repair message?",
+        options: ["The problem and when it started", "Your favorite movie", "Only your name", "No details"],
+        correctIndex: 0,
+        explanation: "The passage says to explain the problem and the date it started.",
+      },
+      {
+        question: "Why should you keep a copy of your message?",
+        options: ["To throw away later", "For your records", "To send to friends", "To avoid repairs"],
+        correctIndex: 1,
+        explanation: "The passage says to keep a copy for your records.",
+      },
+    ],
+  },
+  {
+    id: "sentence-9",
+    category: "sentences",
+    title: "Staying safe online",
+    topic: "Technology",
+    passage:
+      "Use strong passwords for important accounts like email and banking. A strong password uses letters, numbers, and symbols. Do not share your password by text message. If you get a message asking for personal information, stop and check if it is real. Update your phone and apps often to improve security.",
+    questions: [
+      {
+        question: "What makes a password stronger?",
+        options: ["Only your first name", "Letters, numbers, and symbols", "One short word", "Your birth year only"],
+        correctIndex: 1,
+        explanation: "The passage says strong passwords use letters, numbers, and symbols.",
+      },
+      {
+        question: "What should you do if a message asks for personal information?",
+        options: ["Reply right away", "Stop and check if it is real", "Share your password", "Delete every app"],
+        correctIndex: 1,
+        explanation: "It says to stop and verify the message first.",
+      },
+    ],
+  },
+  {
+    id: "sentence-10",
+    category: "sentences",
+    title: "Planning time with others",
+    topic: "Social Life",
+    passage:
+      "Making plans with family and friends is easier when you confirm the details. Agree on the date, time, and place. If your plans change, send a message as soon as possible. Being on time shows respect. Clear communication helps everyone feel included and valued.",
+    questions: [
+      {
+        question: "What details should people confirm when making plans?",
+        options: ["Date, time, and place", "Only the weather", "Nothing important", "Phone battery level"],
+        correctIndex: 0,
+        explanation: "The passage says to agree on the date, time, and place.",
+      },
+      {
+        question: "Why should you send a message if plans change?",
+        options: ["To confuse people", "To keep communication clear", "To cancel every time", "To avoid meeting"],
+        correctIndex: 1,
+        explanation: "The passage emphasizes clear communication and respect for others.",
+      },
+    ],
+  },
+  {
+    id: "sentence-11",
+    category: "sentences",
+    title: "Reading a restaurant menu",
+    topic: "Dining",
+    passage:
+      "Before you order, read the menu slowly. Check the item description to learn what ingredients are included. If you have a food allergy, tell the server before ordering. Look at the price and ask about extra charges, such as adding toppings. Choosing carefully helps you stay safe and within your budget.",
+    questions: [
+      {
+        question: "What should you do if you have a food allergy?",
+        options: ["Order quickly", "Tell the server before ordering", "Avoid reading the menu", "Skip all meals"],
+        correctIndex: 1,
+        explanation: "The passage says to tell the server about allergies before ordering.",
+      },
+      {
+        question: "Why should you check prices and extra charges?",
+        options: ["To spend more money", "To stay within your budget", "To avoid eating", "To get free food"],
+        correctIndex: 1,
+        explanation: "It says checking prices helps you stay within budget.",
+      },
+    ],
+  },
+  {
+    id: "sentence-12",
+    category: "sentences",
+    title: "What to do in an emergency",
+    topic: "Emergencies",
+    passage:
+      "In an emergency, stay calm and call 911. Speak clearly and give your exact address first. Explain what happened and if someone is hurt. Follow the operator's instructions until help arrives. If the area is unsafe, move to a safer place if you can do so quickly.",
+    questions: [
+      {
+        question: "What is one of the first things you should say on a 911 call?",
+        options: ["Your favorite color", "Your exact address", "Your work schedule", "A long story"],
+        correctIndex: 1,
+        explanation: "The passage says to give your exact address first.",
+      },
+      {
+        question: "What should you do while waiting for help?",
+        options: ["Hang up immediately", "Follow the operator's instructions", "Leave without warning", "Ignore safety"],
+        correctIndex: 1,
+        explanation: "It says to follow instructions until help arrives.",
+      },
+    ],
+  },
+  {
+    id: "sentence-13",
+    category: "sentences",
+    title: "Using community services",
+    topic: "Community",
+    passage:
+      "Community centers often offer classes, job support, and food resources. Read flyers and signs to learn dates and times. Bring any required documents, such as ID or proof of address. If you are unsure about a service, ask staff to explain the steps. Community programs can help families meet daily needs.",
+    questions: [
+      {
+        question: "What can help you learn when services are available?",
+        options: ["Ignoring signs", "Reading flyers and signs", "Waiting at home", "Calling random numbers"],
+        correctIndex: 1,
+        explanation: "The passage says to read flyers and signs for dates and times.",
+      },
+      {
+        question: "What should you do if you do not understand a service?",
+        options: ["Leave immediately", "Ask staff to explain the steps", "Guess the process", "Bring no documents"],
+        correctIndex: 1,
+        explanation: "The passage says to ask staff for an explanation if unsure.",
       },
     ],
   },
@@ -649,6 +1131,353 @@ Not valid as proof of financial responsibility in all states — see policy.`,
       },
     ],
   },
+  {
+    id: "real-world-6",
+    category: "real-world",
+    topic: "Finance",
+    title: "Reading a monthly bank statement",
+    documentType: "Bank Account Statement",
+    content: `RIVER BANK
+Monthly Checking Statement
+
+Account Holder: __________________
+Statement Period: 02/01/2026 - 02/28/2026
+
+Beginning Balance: $1,242.18
+Deposits:          $1,180.00
+Withdrawals:       $   924.55
+Service Fee:       $    10.00
+Ending Balance:    $1,487.63
+
+Important:
+Review all transactions.
+Report any errors within 30 days.`,
+    vocabulary: [
+      { word: "statement", definition: "A summary of account activity", phonetic: "stayt-ment" },
+      { word: "withdrawal", definition: "Money taken out of an account", phonetic: "with-draw-ul" },
+      { word: "service fee", definition: "A charge from the bank", phonetic: "sur-vis fee" },
+      { word: "ending balance", definition: "Money left at the end of the period", phonetic: "en-ding bal-ance" },
+    ],
+    questions: [
+      {
+        question: "What is the ending balance on this statement?",
+        options: ["$1,242.18", "$924.55", "$1,487.63", "$10.00"],
+        correctIndex: 2,
+        explanation: "The statement lists the ending balance as $1,487.63.",
+      },
+      {
+        question: "How long do you have to report an error?",
+        options: ["7 days", "30 days", "60 days", "No limit"],
+        correctIndex: 1,
+        explanation: "The statement says to report errors within 30 days.",
+      },
+    ],
+  },
+  {
+    id: "real-world-7",
+    category: "real-world",
+    topic: "Medical",
+    title: "After-visit instructions",
+    documentType: "Clinic Visit Summary",
+    content: `NORTHSIDE FAMILY CLINIC
+After-Visit Summary
+
+Patient: __________________
+Date: __________________
+
+Diagnosis: High blood pressure
+Medication: Lisinopril 10 mg
+Directions: Take 1 tablet once daily with water.
+
+Follow-up appointment: 04/20/2026 at 10:30 AM
+Call clinic if you have:
+- severe dizziness
+- chest pain
+- trouble breathing
+
+Clinic Phone: 555-0142`,
+    vocabulary: [
+      { word: "diagnosis", definition: "The health problem identified by the doctor", phonetic: "dy-ag-no-sis" },
+      { word: "directions", definition: "Instructions for how to use medicine", phonetic: "di-rek-shuns" },
+      { word: "follow-up", definition: "A later visit to check progress", phonetic: "fol-oh-up" },
+      { word: "severe", definition: "Very serious or strong", phonetic: "suh-veer" },
+    ],
+    questions: [
+      {
+        question: "How often should the medicine be taken?",
+        options: ["Twice daily", "Once daily", "Only at night", "Only when in pain"],
+        correctIndex: 1,
+        explanation: "The directions say take 1 tablet once daily.",
+      },
+      {
+        question: "Which symptom should prompt a call to the clinic?",
+        options: ["Mild hunger", "Severe dizziness", "Needing groceries", "Sleepiness after work"],
+        correctIndex: 1,
+        explanation: "The summary says to call if you have severe dizziness.",
+      },
+    ],
+  },
+  {
+    id: "real-world-8",
+    category: "real-world",
+    topic: "Housing",
+    title: "Maintenance request form",
+    documentType: "Apartment Maintenance Request",
+    content: `GREENVIEW APARTMENTS
+Maintenance Request Form
+
+Tenant Name: __________________
+Unit Number: __________________
+Date Reported: __________________
+
+Issue Type:  Plumbing / Electrical / Heating / Other
+Describe the problem:
+_____________________________________
+
+When did it start?
+_____________________________________
+
+Entry Permission:
+[] Staff may enter if tenant is not home
+[] Call tenant before entering
+
+Office Phone: 555-0188`,
+    vocabulary: [
+      { word: "maintenance", definition: "Repairs and upkeep for a building", phonetic: "main-tuh-nuns" },
+      { word: "plumbing", definition: "Pipes and water systems", phonetic: "plum-ing" },
+      { word: "electrical", definition: "Related to power and wiring", phonetic: "ih-lek-trih-kul" },
+      { word: "permission", definition: "Approval to do something", phonetic: "per-mish-un" },
+    ],
+    questions: [
+      {
+        question: "What should you include on this form?",
+        options: ["The problem description", "Your favorite song", "Bank password", "Nothing specific"],
+        correctIndex: 0,
+        explanation: "The form asks you to describe the problem and when it started.",
+      },
+      {
+        question: "What does entry permission section control?",
+        options: ["How much rent costs", "Whether staff can enter the unit", "Your lease length", "Your move-out date"],
+        correctIndex: 1,
+        explanation: "It states whether maintenance staff may enter the apartment.",
+      },
+    ],
+  },
+  {
+    id: "real-world-9",
+    category: "real-world",
+    topic: "Technology",
+    title: "Account security alert",
+    documentType: "Email Security Notice",
+    content: `SECUREMAIL
+Account Security Alert
+
+We noticed a sign-in attempt from a new device.
+
+Date/Time: 03/30/2026 8:14 PM
+Location: Phoenix, AZ
+Device: Chrome on Windows
+
+If this was you, no action is needed.
+If this was NOT you:
+1) Change your password now
+2) Turn on two-step verification
+3) Review recent account activity
+
+Support: help.securemail.com`,
+    vocabulary: [
+      { word: "attempt", definition: "An action someone tries to do", phonetic: "uh-tempt" },
+      { word: "device", definition: "A phone, tablet, or computer", phonetic: "dih-vys" },
+      { word: "verification", definition: "Extra step to confirm identity", phonetic: "vair-uh-fuh-kay-shun" },
+      { word: "activity", definition: "Recent actions done in an account", phonetic: "ak-tiv-ih-tee" },
+    ],
+    questions: [
+      {
+        question: "What should you do first if the sign-in was not you?",
+        options: ["Ignore the message", "Change your password now", "Delete your phone", "Post online"],
+        correctIndex: 1,
+        explanation: "The notice says to change your password immediately.",
+      },
+      {
+        question: "What is two-step verification for?",
+        options: ["Faster typing", "Extra identity protection", "More storage", "Lower internet cost"],
+        correctIndex: 1,
+        explanation: "Two-step verification adds another layer of security.",
+      },
+    ],
+  },
+  {
+    id: "real-world-10",
+    category: "real-world",
+    topic: "Social Life",
+    title: "Community event flyer",
+    documentType: "Neighborhood Event Flyer",
+    content: `WEST RIDGE COMMUNITY CENTER
+Family Game Night
+
+Date: Friday, April 12
+Time: 6:00 PM - 8:00 PM
+Location: 200 Maple Street
+
+Free event for all ages.
+Snacks and water provided.
+
+Please register by Wednesday:
+Call 555-0130 or visit westridgecc.org
+
+Need help getting there?
+Bus Route 7 stops across the street.`,
+    vocabulary: [
+      { word: "register", definition: "To sign up in advance", phonetic: "rej-uh-stur" },
+      { word: "provided", definition: "Given or supplied", phonetic: "pruh-vy-ded" },
+      { word: "location", definition: "Place where something happens", phonetic: "loh-kay-shun" },
+      { word: "route", definition: "Path a bus or vehicle follows", phonetic: "root" },
+    ],
+    questions: [
+      {
+        question: "When does the event take place?",
+        options: ["Friday, April 12", "Monday morning", "Saturday at noon", "No date listed"],
+        correctIndex: 0,
+        explanation: "The flyer lists Friday, April 12.",
+      },
+      {
+        question: "How can someone register?",
+        options: ["Only by mail", "Call or visit the website", "At midnight only", "No registration allowed"],
+        correctIndex: 1,
+        explanation: "It says to call 555-0130 or visit westridgecc.org.",
+      },
+    ],
+  },
+  {
+    id: "real-world-11",
+    category: "real-world",
+    topic: "Dining",
+    title: "Reading a takeout menu",
+    documentType: "Restaurant Takeout Menu",
+    content: `LAKESIDE KITCHEN - TAKEOUT MENU
+
+Chicken Soup .......... $6.50
+Veggie Wrap ........... $8.25
+Grilled Fish Plate .... $12.00
+Rice Bowl ............. $9.00
+
+Add-ons:
+Extra avocado ......... $1.50
+Extra sauce ........... $0.75
+
+Allergy Notice:
+Please tell staff about food allergies before ordering.
+
+Pickup Orders: 555-0174`,
+    vocabulary: [
+      { word: "takeout", definition: "Food you order to eat elsewhere", phonetic: "tayk-out" },
+      { word: "add-on", definition: "Extra item added to an order", phonetic: "ad-on" },
+      { word: "allergy", definition: "Bad body reaction to certain foods", phonetic: "al-er-jee" },
+      { word: "pickup", definition: "Getting your order in person", phonetic: "pik-up" },
+    ],
+    questions: [
+      {
+        question: "What should a customer do before ordering with allergies?",
+        options: ["Stay silent", "Tell staff about allergies", "Order random food", "Only drink water"],
+        correctIndex: 1,
+        explanation: "The menu says to tell staff about food allergies before ordering.",
+      },
+      {
+        question: "How much is the veggie wrap?",
+        options: ["$6.50", "$8.25", "$9.00", "$12.00"],
+        correctIndex: 1,
+        explanation: "The menu lists veggie wrap at $8.25.",
+      },
+    ],
+  },
+  {
+    id: "real-world-12",
+    category: "real-world",
+    topic: "Emergencies",
+    title: "Emergency shelter notice",
+    documentType: "City Emergency Alert",
+    content: `CITY OF NORTH VALLEY
+Emergency Weather Alert
+
+Severe storm expected tonight after 9 PM.
+
+Safety Steps:
+1) Charge your phone
+2) Keep medicines and ID ready
+3) Move to safe shelter if instructed
+
+Emergency Shelter Open:
+Lincoln High School Gym
+Open: 7 PM - 8 AM
+
+For urgent help call 911
+For non-urgent info call 311`,
+    vocabulary: [
+      { word: "severe", definition: "Very serious or dangerous", phonetic: "suh-veer" },
+      { word: "shelter", definition: "A safe place during danger", phonetic: "shel-ter" },
+      { word: "urgent", definition: "Needs immediate action", phonetic: "ur-jent" },
+      { word: "non-urgent", definition: "Important but not immediate emergency", phonetic: "non-ur-jent" },
+    ],
+    questions: [
+      {
+        question: "Where is the emergency shelter located?",
+        options: ["City Hall", "Lincoln High School Gym", "Downtown Library", "River Park"],
+        correctIndex: 1,
+        explanation: "The notice says the shelter is at Lincoln High School Gym.",
+      },
+      {
+        question: "Which number should you call for urgent help?",
+        options: ["311", "411", "911", "211"],
+        correctIndex: 2,
+        explanation: "The notice says urgent help is 911.",
+      },
+    ],
+  },
+  {
+    id: "real-world-13",
+    category: "real-world",
+    topic: "Community",
+    title: "Bus schedule and route map",
+    documentType: "Public Transit Schedule",
+    content: `CITY TRANSIT - ROUTE 7
+
+Weekday Departures (Main St Stop):
+6:30 AM
+7:00 AM
+7:30 AM
+8:00 AM
+
+Evening Departures:
+5:30 PM
+6:00 PM
+6:30 PM
+
+Fare:
+Adult $2.00 each ride
+Reduced fare with approved pass
+
+Need trip help? Call 555-0111`,
+    vocabulary: [
+      { word: "departure", definition: "Time when the bus leaves", phonetic: "dih-par-chur" },
+      { word: "fare", definition: "Cost of a ride", phonetic: "fair" },
+      { word: "reduced", definition: "Lower than normal amount", phonetic: "rih-doost" },
+      { word: "pass", definition: "Card or ticket for transit use", phonetic: "pas" },
+    ],
+    questions: [
+      {
+        question: "What is the weekday departure after 7:00 AM?",
+        options: ["6:30 AM", "7:30 AM", "5:30 PM", "8:30 AM"],
+        correctIndex: 1,
+        explanation: "The next listed departure after 7:00 AM is 7:30 AM.",
+      },
+      {
+        question: "What is the regular adult fare per ride?",
+        options: ["$1.00", "$1.50", "$2.00", "$2.50"],
+        correctIndex: 2,
+        explanation: "The schedule lists adult fare as $2.00 each ride.",
+      },
+    ],
+  },
 ];
 
 export const allLessons: Lesson[] = [
@@ -660,6 +1489,11 @@ export const allLessons: Lesson[] = [
 
 export function getLessonsByCategory(category: string): Lesson[] {
   return allLessons.filter((l) => l.category === category);
+}
+
+export function getLessonsByCategoryAndContext(category: string, context: PracticeContext): Lesson[] {
+  const aliases = LEGACY_TOPIC_ALIASES_BY_CONTEXT[context] ?? [];
+  return allLessons.filter((l) => l.category === category && aliases.includes(l.topic));
 }
 
 export function getLessonById(id: string): Lesson | undefined {

@@ -1,10 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Check, X, RotateCcw, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useApp } from "@/contexts/AppContext";
-import { getLessonById, getLessonsByCategory } from "@/lib/lessonData";
+import { getLessonById, getLessonsByCategoryAndContext, PRACTICE_CONTEXTS, type PracticeContext } from "@/lib/lessonData";
 import { cn } from "@/lib/utils";
 import { AudioButton } from "@/components/AudioButton";
 import { PassageSpeechControls } from "@/components/PassageSpeechControls";
@@ -19,6 +19,11 @@ import type { Lesson } from "@/lib/types";
 export default function LessonScreen() {
   const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const contextParam = searchParams.get("context");
+  const selectedContext = (PRACTICE_CONTEXTS.includes(contextParam as PracticeContext)
+    ? contextParam
+    : PRACTICE_CONTEXTS[0]) as PracticeContext;
   const { completeLesson } = useApp();
   const lesson = getLessonById(lessonId || "");
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -35,14 +40,13 @@ export default function LessonScreen() {
     setSelectedAnswer(null);
   }, [lessonId]);
 
-  if (!lesson) return <div className="p-8 text-center">Lesson not found</div>;
-
   const multiQuiz =
-    lesson.category === "sentences" || lesson.category === "real-world" ? lesson.questions : null;
+    lesson && (lesson.category === "sentences" || lesson.category === "real-world") ? lesson.questions : null;
   const totalQuestions = multiQuiz?.length ?? 0;
   const currentQuestion = multiQuiz?.[questionIndex];
 
   const getCorrectIndex = (): number => {
+    if (!lesson) return -1;
     if (lesson.category === "phonics") return lesson.exercise.correctIndex;
     if (lesson.category === "sentences" || lesson.category === "real-world") {
       return currentQuestion?.correctIndex ?? -1;
@@ -50,11 +54,10 @@ export default function LessonScreen() {
     return -1;
   };
 
-  const currentExplanation = useMemo(() => {
-    if (lesson.category === "phonics") return lesson.exercise.explanation;
-    if (currentQuestion) return currentQuestion.explanation;
-    return "";
-  }, [lesson, currentQuestion]);
+  const currentExplanation =
+    lesson?.category === "phonics" ? lesson.exercise.explanation : currentQuestion?.explanation ?? "";
+
+  if (!lesson) return <div className="p-8 text-center">Lesson not found</div>;
 
   const isCorrect = selectedAnswer !== null && selectedAnswer === getCorrectIndex();
 
@@ -65,12 +68,12 @@ export default function LessonScreen() {
   };
 
   const navigateAfterLesson = (finishedLesson: Lesson) => {
-    const siblings = getLessonsByCategory(finishedLesson.category);
+    const siblings = getLessonsByCategoryAndContext(finishedLesson.category, selectedContext);
     const currentIdx = siblings.findIndex((l) => l.id === finishedLesson.id);
     if (currentIdx < siblings.length - 1) {
-      navigate(`/lesson/${siblings[currentIdx + 1].id}`);
+      navigate(`/lesson/${siblings[currentIdx + 1].id}?context=${encodeURIComponent(selectedContext)}`);
     } else {
-      navigate(`/category/${finishedLesson.category}`);
+      navigate(`/category/${finishedLesson.category}?context=${encodeURIComponent(selectedContext)}`);
     }
   };
 
@@ -114,7 +117,7 @@ export default function LessonScreen() {
       <div className="mx-auto w-full max-w-md md:max-w-2xl px-4 sm:px-5 md:px-6 lg:px-8 pt-4 sm:pt-6">
         <button
           type="button"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate(`/category/${lesson.category}?context=${encodeURIComponent(selectedContext)}`)}
           className="mb-4 flex items-center gap-2 text-muted-foreground hover:text-foreground min-h-[44px]"
         >
           <ArrowLeft className="h-5 w-5" />
@@ -195,7 +198,10 @@ export default function LessonScreen() {
               Tap a word to open it. Use the speaker to hear the word, meaning, and example.
             </p>
             <SightWordCards words={lesson.words} onComplete={() => completeLesson(lesson.id, 100, { correctCount: lesson.words.length, total: lesson.words.length })} />
-            <Button className="mt-6 w-full min-h-[52px] gap-2" onClick={() => navigate(`/category/${lesson.category}`)}>
+            <Button
+              className="mt-6 w-full min-h-[52px] gap-2"
+              onClick={() => navigate(`/category/${lesson.category}?context=${encodeURIComponent(selectedContext)}`)}
+            >
               Done
               <Check className="h-5 w-5" />
             </Button>

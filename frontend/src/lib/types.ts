@@ -1,7 +1,24 @@
 export type LessonCategory = "phonics" | "sight-words" | "sentences" | "real-world";
 
-/** Shared across all lesson types so each category lines up by theme */
-export type ContentTopic = "Documents" | "Shopping" | "Everyday terms" | "Driving" | "Auto/legal";
+/** Shared across all lesson types so each category lines up by practical theme */
+export type ContentTopic =
+  | "Documents"
+  | "Shopping"
+  | "Everyday terms"
+  | "Driving"
+  | "Auto/legal"
+  | "Everyday Terms"
+  | "Employment"
+  | "Finance"
+  | "Legal"
+  | "Medical"
+  | "Housing"
+  | "Auto"
+  | "Technology"
+  | "Social Life"
+  | "Dining"
+  | "Emergencies"
+  | "Community";
 
 export interface UserProfile {
   userId?: number;
