@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { useApp } from "@/contexts/AppContext";
 import { BottomNav } from "@/components/BottomNav";
 import { categoryInfo, getLessonsByCategory } from "@/lib/lessonData";
-import { getCurrentLevel, isCategoryUnlocked } from "@/lib/progression";
+import { getCurrentLevel } from "@/lib/progression";
 
 const iconMap: Record<string, React.ElementType> = {
   "volume-2": Volume2,
@@ -25,7 +25,6 @@ export default function Dashboard() {
   // Find next incomplete lesson
   const getNextLesson = () => {
     for (const cat of categoryInfo) {
-      if (!isCategoryUnlocked(cat.id, totalCompleted)) continue;
       const lessons = getLessonsByCategory(cat.id);
       const next = lessons.find((l) => !state.progress[l.id]?.completed);
       if (next) return { lesson: next, category: cat };

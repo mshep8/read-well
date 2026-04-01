@@ -15,7 +15,6 @@ import {
   passageToSpeechParts,
 } from "@/lib/speak";
 import type { Lesson } from "@/lib/types";
-import { getCurrentLevel, getRequiredLevelForCategory, isCategoryUnlocked } from "@/lib/progression";
 
 export default function LessonScreen() {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -25,7 +24,7 @@ export default function LessonScreen() {
   const selectedContext = (PRACTICE_CONTEXTS.includes(contextParam as PracticeContext)
     ? contextParam
     : PRACTICE_CONTEXTS[0]) as PracticeContext;
-  const { state, completeLesson } = useApp();
+  const { completeLesson } = useApp();
   const lesson = getLessonById(lessonId || "");
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [answered, setAnswered] = useState(false);
@@ -59,32 +58,6 @@ export default function LessonScreen() {
     lesson?.category === "phonics" ? lesson.exercise.explanation : currentQuestion?.explanation ?? "";
 
   if (!lesson) return <div className="p-8 text-center">Lesson not found</div>;
-
-  const totalCompleted = Object.values(state.progress).filter((p) => p.completed).length;
-  const currentLevel = getCurrentLevel(totalCompleted);
-  const requiredLevel = getRequiredLevelForCategory(lesson.category);
-  const unlocked = isCategoryUnlocked(lesson.category, totalCompleted);
-
-  if (!unlocked) {
-    return (
-      <div className="min-h-screen pb-8">
-        <div className="mx-auto w-full max-w-md md:max-w-2xl px-4 sm:px-5 md:px-6 lg:px-8 pt-6 sm:pt-8">
-          <Card className="border-warm/30 bg-warm/5">
-            <CardContent className="p-5">
-              <p className="text-lg font-semibold mb-2">This lesson is locked</p>
-              <p className="text-muted-foreground mb-4">
-                Reach Level {requiredLevel} to unlock {lesson.category.replace("-", " ")} lessons. You are currently
-                Level {currentLevel.level}.
-              </p>
-              <Button className="w-full min-h-[48px]" onClick={() => navigate("/lessons")}>
-                Back to Lessons
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
 
   const isCorrect = selectedAnswer !== null && selectedAnswer === getCorrectIndex();
 

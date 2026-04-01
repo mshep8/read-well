@@ -15,13 +15,6 @@ export const learningLevels: LearningLevel[] = [
   { level: 5, title: "Master", difficulty: "Independent Reading", requiredLessons: allLessons.length },
 ];
 
-const categoryUnlockLevel: Record<string, number> = {
-  phonics: 1,
-  "sight-words": 1,
-  sentences: 2,
-  "real-world": 3,
-};
-
 export function getCurrentLevel(totalCompleted: number): LearningLevel {
   return [...learningLevels].reverse().find((level) => totalCompleted >= level.requiredLessons) ?? learningLevels[0];
 }
@@ -31,11 +24,10 @@ export function getNextLevel(totalCompleted: number): LearningLevel | null {
   return learningLevels.find((level) => level.level === currentLevel.level + 1) ?? null;
 }
 
-export function getRequiredLevelForCategory(categoryId: string): number {
-  return categoryUnlockLevel[categoryId] ?? 1;
+export function getRequiredLevelForCategory(_categoryId: string): number {
+  return 1;
 }
 
-export function isCategoryUnlocked(categoryId: string, totalCompleted: number): boolean {
-  const currentLevel = getCurrentLevel(totalCompleted);
-  return currentLevel.level >= getRequiredLevelForCategory(categoryId);
+export function isCategoryUnlocked(_categoryId: string, _totalCompleted: number): boolean {
+  return true;
 }
